@@ -5,11 +5,12 @@ import { createApp } from 'vue'
 // import Upload from './AppFetch.vue'
 import App from './App.vue'
 import router from './router'
-import 'element-plus/packages/theme-chalk/src/base.scss'
+import 'element-plus/lib/theme-chalk/index.css'
 import './assets/global.css'
 import { ElIcon, ElContainer, ElMain, ElUpload, ElHeader, ElSelect, ElOption, ElRadio, ElTabs, ElTabPane, ElInput, ElTag, ElFooter, ElLink } from 'element-plus'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+// 增加的引入
 
 const app = createApp(App)
 

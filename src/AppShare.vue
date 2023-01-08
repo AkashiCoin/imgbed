@@ -13,7 +13,7 @@
       </div>
     </el-main>
     <div class="footer">
-      <el-link href="https://github.com/Xhofe" type="success" target="_blank">Github</el-link>
+      <el-link href="/upload" type="success" target="_blank">免费文件上传</el-link>
     </div>
   </el-container>
 </template>
@@ -31,12 +31,13 @@ interface Option {
 }
 
 export default defineComponent({
-  name: "App",
+  name: "Share",
   components: {
     UrlShow,
   },
   setup() {
     const uploading = ref(false)
+    const attachmentUrl = ref("")
     const apis = import.meta.globEager("./apis/*.ts");
     const api_options = ref<Option[]>([]);
     const choose_api = ref("");
@@ -47,76 +48,20 @@ export default defineComponent({
       const api = apis[path].default as ImgApi;
       api_options.value.push({ path: path, api: api });
     }
-    const httpRequest = (param: any) => {
-      const file = param.file;
-      uploading.value = true;
-      upload(apis[choose_api.value].default as ImgApi, file).then((res) => {
-        uploading.value = false;
-        if (!res.img_url || res.err_msg) {
-          ElMessage.error(res.err_msg);
-          param.onError();
-          return;
-        }
-        param.onSuccess();
-        url.value = res.img_url;
-        name.value = file.name;
-      });
-    };
-    const clickUpload = () => {
-      if (!choose_api.value) {
-        ElMessage.warning("请先选择一个接口");
-        return;
-      }
-      if (uploading.value) {
-        ElMessage.warning("正在上传中, 请稍后...");
-        return
-      }
-    };
-    const pasteUpload = async (e: any) => {
-      if (!choose_api.value) {
-        ElMessage.warning("请先选择一个接口");
-        return;
-      }
-      if (uploading.value) {
-        ElMessage.warning("正在上传中, 请稍后...");
-      }
-      const items: any = e.clipboardData!.items;
-      for (const item of items) {
-        if (item.type.indexOf("image") !== -1) {
-          const file = item.getAsFile();
-          uploading.value = true;
-          const res = await upload(
-            apis[choose_api.value].default as ImgApi,
-            file
-          );
-          uploading.value = false;
-          if (!res.img_url || res.err_msg) {
-            ElMessage.error(res.err_msg);
-            return;
-          }
-          url.value = res.img_url;
-          name.value = file.name;
-          return;
-        }
-      }
-      ElMessage.warning("请粘贴图片文件");
-    };
 
-    onMounted(() => {
-      document.addEventListener("paste", pasteUpload);
-    });
-    onBeforeUnmount(() => {
-      document.removeEventListener("paste", pasteUpload);
-    });
+    const download = async () => {
+
+    }
+    
     return {
       api_options,
       choose_api,
       url,
       name,
-      httpRequest,
       uploader,
-      clickUpload,
       uploading,
+      attachmentUrl,
+      download,
     };
   },
 });
