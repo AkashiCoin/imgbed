@@ -10,8 +10,8 @@
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">粘贴/将文件拖到此处，或<em>点击上传</em></div>
         </el-upload>
-        <el-button id="download" type="primary" size="mini" @click="poolDownload">下载</el-button>
-        <el-input v-model="jsonInfo" id="jsonInfo" type="textarea" autosize></el-input>
+        <el-button id="download" type="primary" size="small" @click="poolDownload">下载<i class="el-icon-download el-icon--right"></i></el-button>
+        <el-input v-model="jsonInfo" id="jsonInfo" type="textarea" autosize placeholder="文件分片信息"></el-input>
       </div>
     </el-main>
     <div class="footer">

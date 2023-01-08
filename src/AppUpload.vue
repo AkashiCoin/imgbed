@@ -18,14 +18,14 @@
           :auto-upload="true" :disabled="choose_api == '' || uploading" @click="clickUpload">
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">粘贴/将文件拖到此处，或<em>点击上传</em></div>
+          <div class="el-upload__tip">若分片上传失败可再次上传</div>
         </el-upload>
-        <el-label>分享链接</el-label>
-        <el-input v-model="shareLink" disabled>
+        <el-input v-model="shareLink" disabled placeholder="分享链接">
           <template #suffix>
             <i style="cursor: pointer;" class="el-input__icon el-icon-copy-document" @click="copyToClip(shareLink)"></i>
           </template>
         </el-input>
-        <el-input v-model="jsonInfo" id="jsonInfo" type="textarea" autosize></el-input>
+        <el-input v-model="jsonInfo" id="jsonInfo" type="textarea" autosize placeholder="文件分片信息"></el-input>
         <!-- <div class="urls" v-for="url in urls">
           <url-show v-show="url.url !== ''" id="url-show" :url="url.url" :name="url.name"></url-show>
         </div> -->
