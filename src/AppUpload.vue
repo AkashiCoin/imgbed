@@ -19,6 +19,12 @@
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">粘贴/将文件拖到此处，或<em>点击上传</em></div>
         </el-upload>
+        <el-label>分享链接</el-label>
+        <el-input v-model="shareLink" disabled>
+          <template #suffix>
+            <i style="cursor: pointer;" class="el-input__icon el-icon-copy-document" @click="copyToClip(shareLink)"></i>
+          </template>
+        </el-input>
         <el-input v-model="jsonInfo" id="jsonInfo" type="textarea" autosize></el-input>
         <!-- <div class="urls" v-for="url in urls">
           <url-show v-show="url.url !== ''" id="url-show" :url="url.url" :name="url.name"></url-show>
@@ -38,6 +44,7 @@ import { ElMessage } from "element-plus";
 import upload from "./utils/upload_xhr";
 import UrlShow from "./components/UrlShow.vue";
 import FileInfo from "./file_info";
+import { copyToClip } from "./utils/copy_clip";
 
 interface Option {
   path: string;
@@ -60,6 +67,7 @@ export default defineComponent({
     const api_options = ref<Option[]>([]);
     const choose_api = ref("");
     const url = ref("");
+    const shareLink = ref("");
     const urls = ref<Urls[]>([]);
     const name = ref("");
     const jsonInfo = ref("")
@@ -257,6 +265,8 @@ export default defineComponent({
       uploading,
       urls,
       jsonInfo,
+      shareLink,
+      copyToClip,
     };
   },
 });

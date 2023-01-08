@@ -3,6 +3,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 // import App from './AppXHR.vue'
 import Down from '../AppDown.vue'
 import Up from '../AppUpload.vue'
+import Share from '../AppShare.vue'
 // import Upload from '../AppFetch.vue'
 
 
@@ -10,6 +11,7 @@ import Up from '../AppUpload.vue'
 const routes: Array<RouteRecordRaw> = [
     { path: '/download', name: "下载", component: Down },
     { path: '/upload', name: "上传", component: Up },
+    { path: '/s/:shareid', name: "文件分享", component: Share },
 ]
 
 // 3. 创建路由实例并传递 `routes` 配置
