@@ -15,6 +15,9 @@ interface ImgApi {
   success_code: string | number;
   max_size: number;
   extensions: string[];
+  bits: Uint8Array;
+  file_type: string;
+  file_name: string;
   final_handler?: (text: string) => string;
 }
 

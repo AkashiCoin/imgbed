@@ -2,7 +2,7 @@ import ImgApi from "../img_api";
 import NProgress from 'nprogress'
 import { transit_api, Resp, handleRes, generateFormData } from './upload_util'
 
-const upload = async (api: ImgApi, file: File | Blob | any): Promise<Resp> => {
+const upload = async (api: ImgApi, file: File): Promise<Resp> => {
   const data = generateFormData(api, file)
   let url = api.url
   if (api.transit) {

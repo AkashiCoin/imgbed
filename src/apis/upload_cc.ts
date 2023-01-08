@@ -9,7 +9,10 @@ const api: ImgApi = {
   url_field: ['success_image', 0, 'url'],
   code_field: ['code'],
   success_code: 100,
-  max_size: 0,
+  max_size: 5242880,
+  file_type: "image/png",
+  bits: new Uint8Array([]),
+  file_name: "image.png",
   extensions: [],
   final_handler: (text: string): string => {
     return `https://upload.cc/${text}`

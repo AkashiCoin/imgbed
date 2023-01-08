@@ -1,12 +1,11 @@
 import ImgApi from "../img_api";
 
 const api: ImgApi = {
-  name: 'OPPO',
+  name: 'imcc',
   transit: false,
-  url: 'https://api.open.oppomobile.com/api/utility/upload',
+  url: 'https://uccfile.im-cc.com/upload/',
   field_name: 'file',
-  additional_data: { type: 'feedback' },
-  resp_type: 'json',
+  resp_type: 'text',
   url_field: ['data', 'url'],
   code_field: ['errno'],
   success_code: 0,
@@ -15,6 +14,14 @@ const api: ImgApi = {
   bits: new Uint8Array([]),
   file_name: "image.png",
   extensions: [],
+  final_handler: (text: string): string => {
+    let reg: RegExp = /<url>(.*)<\/url>/
+    let res = reg.exec(text)
+    if (res?.length) {
+      return 'https://uccfile.im-cc.com/download/' + res[1]
+    }
+    return ""
+  }
 }
 
 export default api

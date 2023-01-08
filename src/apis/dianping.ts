@@ -2,7 +2,7 @@ import ImgApi from "../img_api";
 
 const api: ImgApi = {
   name: '大众点评',
-  transit: false,
+  transit: true,
   url: 'https://kf.dianping.com/api/file/burstUploadFile',
   field_name: 'files',
   headers: {
@@ -18,7 +18,10 @@ const api: ImgApi = {
   url_field: ['data', 'uploadPath'],
   code_field: ['code'],
   success_code: 200,
-  max_size: 0,
+  max_size: 5242880,
+  file_type: "image/png",
+  bits: new Uint8Array([]),
+  file_name: "image.png",
   extensions: [],
 }
 

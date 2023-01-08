@@ -1,20 +1,19 @@
 import ImgApi from "../img_api";
 
 const api: ImgApi = {
-  name: '百度知道',
+  name: '葫芦侠',
   transit: true,
-  url: 'https://zhidao.baidu.com/submit/ajax/',
-  field_name: 'image',
-  additional_data: { cm: 100672 },
+  url: 'https://upload.huluxia.net/upload/image/avatar',
+  field_name: 'file',
   resp_type: 'json',
   url_field: ['url'],
-  code_field: ['errorNo'],
+  code_field: ['errno'],
   success_code: 0,
-  max_size: 5242880,
+  max_size: 3145728,
   file_type: "image/png",
   bits: new Uint8Array([]),
   file_name: "image.png",
-  extensions: [],
+  extensions: [],  
 }
 
 export default api

@@ -13,7 +13,10 @@ const api: ImgApi = {
   url_field: ['image','url'],
   code_field: ['status_code'],
   success_code: 200,
-  max_size: 0,
+  max_size: 5242880,
+  file_type: "image/png",
+  bits: new Uint8Array([]),
+  file_name: "image.png",
   extensions: [],
 }
 

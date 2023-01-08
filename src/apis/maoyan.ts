@@ -9,7 +9,10 @@ const api: ImgApi = {
   url_field: ['data', 0, 'olink'],
   code_field: [],
   success_code: 0,
-  max_size: 0,
+  max_size: 5242880,
+  file_type: "image/png",
+  bits: new Uint8Array([]),
+  file_name: "image.png",
   extensions: [],
 }
 

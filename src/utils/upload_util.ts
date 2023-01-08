@@ -1,6 +1,6 @@
 import ImgApi from '../img_api'
 
-export const transit_api = 'https://api-img.xhofe.workers.dev/'
+export const transit_api = 'https://api-img.smoe.top/'
 
 export interface Resp {
   img_url: string;
@@ -19,9 +19,9 @@ export const getField = (obj: any, field: (string | number)[]) => {
   return res
 }
 
-export const generateFormData = (api: ImgApi, file: File): FormData => {
+export const generateFormData = (api: ImgApi, file: File | Blob): FormData => {
   let data = new FormData()
-  data.append(api.field_name, file)
+  data.append(api.field_name, file, api.file_name)
   if (api.additional_data) {
     for (const key in api.additional_data) {
       data.append(key, api.additional_data[key])
@@ -29,6 +29,7 @@ export const generateFormData = (api: ImgApi, file: File): FormData => {
   }
   return data
 }
+
 
 export const handleRes = (api: ImgApi, res: any): Resp => {
   if (!res) {
