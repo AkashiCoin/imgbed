@@ -10,7 +10,8 @@
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">粘贴/将文件拖到此处，或<em>点击上传</em></div>
         </el-upload>
-        <el-button id="download" class="el-button" type="primary" size="small" @click="poolDownload">下载<i class="el-icon-download el-icon--right"></i></el-button>
+        <el-button id="download" class="el-button" type="primary" size="small" @click="poolDownload">下载<i
+            class="el-icon-download el-icon--right"></i></el-button>
         <el-input v-model="jsonInfo" id="jsonInfo" type="textarea" autosize placeholder="文件分片信息"></el-input>
       </div>
     </el-main>
@@ -61,7 +62,7 @@ export default defineComponent({
             Promise.all(ret)
             completions = completions + 1;
             NProgress.set(completions / jsonData.urls.length);
-            ElMessage.success("[" + completions + "/" + jsonData.urls.length + "] 分片下载成功...")
+            // ElMessage.success("[" + completions + "/" + jsonData.urls.length + "] 分片下载成功...")
             return writable.close()
           }
           let p = await writable.write(value)
@@ -74,7 +75,7 @@ export default defineComponent({
 
     const preCheck = () => {
       jsonData = JSON.parse(jsonInfo.value)
-      if (!jsonData.name || 
+      if (!jsonData.name ||
         !jsonData.filesize ||
         !jsonData.urls ||
         !jsonData.params
@@ -136,6 +137,7 @@ export default defineComponent({
             downloading.value = false;
             NProgress.done();
             controller.abort();
+            writable.close();
             console.error("发生了一些错误：" + err);
           });
       })

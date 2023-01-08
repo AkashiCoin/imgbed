@@ -72,6 +72,7 @@ export default defineComponent({
     const name = ref("");
     const jsonInfo = ref("")
     const uploader = ref<any>(null);
+    const api = "https://img-test.pages.dev/api"
     for (const path in apis) {
       const api = apis[path].default as ImgApi;
       api_options.value.push({ path: path, api: api });
@@ -108,6 +109,36 @@ export default defineComponent({
         length += array.length;
       }
       return result;
+    }
+
+    const uploadFileInfo = async (info: any) => {
+      let formData = new FormData();
+      if (info) {
+        Object.keys(info).forEach((key) => {
+          if (typeof info[key] == "string") {
+            formData.append(key, info[key]);
+          } else {
+            formData.append(key, JSON.stringify(info[key]));
+          }
+        });
+      }
+      fetch(api + "/upload_file_info", {
+        method: "POST",
+        body: formData
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          if (json.code == 0) {
+            ElMessage.success("文件分享成功...");
+            shareLink.value = json.shareLink;
+          }
+          else {
+            ElMessage.error("文件分享失败，错误代码:" + json.code + "\n错误信息:" + json.message);
+          }
+        })
+        .catch((err) => {
+          ElMessage.error("文件分享失败，未知错误:" + err);
+        })
     }
 
 
@@ -148,9 +179,10 @@ export default defineComponent({
           _start = _start + _end;
           console.log(_start)
           if (_end == _fileSize) {
-            uploading.value =false
+            uploading.value = false
             Promise.all(ret)
             ElMessage.success("文件信息补全完毕...");
+            uploadFileInfo(fileInfo)
             jsonInfo.value = JSON.stringify(fileInfo, null, 4);
             return;
           }
@@ -196,7 +228,8 @@ export default defineComponent({
                 ElMessage.success("文件上传完毕...")
                 uploading.value = false;
                 jsonInfo.value = JSON.stringify(fileInfo, null, 4);
-                createAndDownloadFile(fileInfo.name + ".json", jsonInfo.value);
+                // createAndDownloadFile(fileInfo.name + ".json", jsonInfo.value);
+                uploadFileInfo(fileInfo)
               });
           }
         }

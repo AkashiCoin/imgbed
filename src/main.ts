@@ -10,9 +10,10 @@ import './assets/global.css'
 import { ElIcon, ElContainer, ElMain, ElUpload, ElHeader, ElSelect, ElOption, ElRadio, ElTabs, ElTabPane, ElInput, ElTag, ElFooter, ElLink } from 'element-plus'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-// 增加的引入
 
 const app = createApp(App)
+
+// Vue.prototype.api = "https://"
 
 const components = [
   ElIcon, ElContainer, ElMain, ElHeader,
