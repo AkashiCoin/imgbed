@@ -25,11 +25,11 @@
           class="el-button"
           type="primary"
           size="small"
-          @click="poolDownload"
+          @click="Download"
           >下载<i class="el-icon-download el-icon--right"></i
         ></el-button>
         <el-input
-        class="el-input"
+          class="el-input"
           v-model="jsonInfo"
           id="jsonInfo"
           type="textarea"
@@ -55,12 +55,12 @@ import {
   onMounted,
   ref,
 } from "@vue/runtime-core";
-import { createDownloadStream } from "../utils/common";
 
 import { ElMessage } from "element-plus";
 import UrlShow from "../components/UrlShow.vue";
 import FileInfo from "../file_info";
-import NProgress from "nprogress";
+import poolDownload from "../utils/download";
+import { preCheck } from "../utils/download_utils";
 
 export default defineComponent({
   name: "Down",
@@ -69,127 +69,36 @@ export default defineComponent({
   },
   setup() {
     const downloading = ref(false);
-    const apis = import.meta.globEager("./apis/*.ts");
-    const name = ref("");
     const downloader = ref<any>(null);
     const jsonInfo = ref("");
-    let completions = 0;
-    let jsonData: FileInfo;
-    let controller = new AbortController();
-    let { signal } = controller;
 
-    const download_chunk = async (
-      url: string,
-      writable: WritableStreamDefaultWriter<any>
-    ) => {
-      return fetch(url, {
-        headers: {
-          range: `bytes=${jsonData.params.padding}-`,
-        },
-        signal: signal,
-      }).then(async (res) => {
-        const reader = res.body!.getReader();
-        let ret: any[] = [];
-        const pump = async () => {
-          const { done, value } = await reader.read();
-          if (done) {
-            Promise.all(ret);
-            completions = completions + 1;
-            NProgress.set(completions / jsonData.urls.length);
-            // ElMessage.success("[" + completions + "/" + jsonData.urls.length + "] 分片下载成功...")
-            return writable.close();
-          }
-          let p = await writable.write(value);
-          ret.push(p);
-          pump();
-        };
-        pump();
-      });
-    };
-
-    const preCheck = () => {
-      jsonData = JSON.parse(jsonInfo.value);
-      if (
-        !jsonData.name ||
-        !jsonData.filesize ||
-        !jsonData.urls ||
-        !jsonData.params
-      ) {
-        ElMessage.error("文件信息有误...");
-        return false;
-      }
-      return true;
-    };
-
-    const poolDownload = async () => {
+    const Download = async () => {
       if (jsonInfo.value == "") {
         ElMessage.error("请先上传文件或者输入信息..");
-        return;
+        return false;
       }
-      if (!preCheck()) return;
-      controller = new AbortController();
-      signal = controller.signal;
-      completions = 0;
       downloading.value = true;
-      NProgress.start();
-      // const reader = file.stream().getReader();
-      const writableStream = await createDownloadStream(
-        jsonData.name,
-        jsonData.filesize
-      );
-      const writable = writableStream.getWriter();
-      const readers: ReadableStreamDefaultReader<any>[] = [];
-      const cancelReaders = (reads: ReadableStreamDefaultReader<any>[]) => {
-        reads.forEach(async (reader) => {
-          await reader.cancel();
-        });
-      };
-      const readStream = async (i: number) => {
-        if (!downloading.value) {
-          NProgress.done();
-          controller.abort();
-          ElMessage.error("下载失败...");
-          cancelReaders(readers);
-          return writable.close();
+      const file_info: FileInfo = JSON.parse(jsonInfo.value) as FileInfo;
+      await poolDownload(file_info).then((resp) => {
+        console.log(resp);
+        downloading.value = false;
+        switch (resp.code) {
+          case 0:
+            ElMessage.success(resp.message);
+            break;
+          case 1:
+            ElMessage.info(resp.message);
+            break;
+          case 2:
+            ElMessage.error(resp.message);
+            break;
+          case 3:
+            ElMessage.warning(resp.message);
+            break;
+          default:
+            ElMessage.error("未知错误: " + resp.message);
         }
-        if (i == jsonData.urls.length) {
-          console.log("读取完成");
-          NProgress.done();
-          downloading.value = false;
-          ElMessage.success("下载完成...");
-          return writable.close();
-        }
-        const { done, value } = await readers[i].read();
-        if (done) {
-          readStream(i + 1);
-          return;
-        }
-        try {
-          await writable.write(value).then(() => readStream(i));
-        } catch {
-          NProgress.done();
-          downloading.value = false;
-          ElMessage.warning("下载已取消...");
-          cancelReaders(readers);
-          controller.abort();
-        }
-      };
-      jsonData.urls.forEach(async (url) => {
-        let transfromStream = new TransformStream();
-        readers.push(transfromStream.readable.getReader());
-        await download_chunk(url, transfromStream.writable.getWriter()).catch(
-          (err) => {
-            downloading.value = false;
-            NProgress.done();
-            controller.abort();
-            cancelReaders(readers);
-            writable.close();
-            console.error("发生了一些错误：" + err);
-          }
-        );
       });
-      readStream(0);
-      ElMessage.info("开始下载文件...");
     };
 
     const loadFile = async (param: any) => {
@@ -202,7 +111,7 @@ export default defineComponent({
           null,
           4
         );
-        if (!preCheck()) return;
+        if (!preCheck(JSON.parse(jsonInfo.value))) return;
         ElMessage.success("上传成功，点击下载按钮开始下载...");
       };
     };
@@ -220,42 +129,42 @@ export default defineComponent({
       document.removeEventListener("paste", pasteUpload);
     });
 
-    const singleDownload = async (
-      writable: WritableStreamDefaultWriter<any>
-    ) => {
-      const poolLimit = 4;
-      const ret: ReadableStreamDefaultReader<any>[] = [];
-      const createDownloadTask = async (_i: number) => {
-        for (let i = 0 + _i; i < poolLimit + _i; i++) {
-          if (i == jsonData.urls.length) break;
-          const transfromStream = new TransformStream();
-          ret.push(transfromStream.readable.getReader());
-          await download_chunk(
-            jsonData.urls[i],
-            transfromStream.writable.getWriter()
-          );
-        }
-      };
-      const readStream = async (i: number) => {
-        if (i == jsonData.urls.length) return writable.close();
-        const { done, value } = await ret[i].read();
-        if (done) {
-          if ((i + poolLimit - 1) % poolLimit == 0)
-            return await createDownloadTask(i + poolLimit - 1);
-          readStream(i + 1);
-          return;
-        }
-        await writable.write(value).then(() => readStream(i));
-      };
-      await createDownloadTask(0).then(() => readStream(0));
-    };
+    // const singleDownload = async (
+    //   writable: WritableStreamDefaultWriter<any>
+    // ) => {
+    //   const poolLimit = 4;
+    //   const ret: ReadableStreamDefaultReader<any>[] = [];
+    //   const createDownloadTask = async (_i: number) => {
+    //     for (let i = 0 + _i; i < poolLimit + _i; i++) {
+    //       if (i == jsonData.urls.length) break;
+    //       const transfromStream = new TransformStream();
+    //       ret.push(transfromStream.readable.getReader());
+    //       await download_chunk(
+    //         jsonData.urls[i],
+    //         transfromStream.writable.getWriter()
+    //       );
+    //     }
+    //   };
+    //   const readStream = async (i: number) => {
+    //     if (i == jsonData.urls.length) return writable.close();
+    //     const { done, value } = await ret[i].read();
+    //     if (done) {
+    //       if ((i + poolLimit - 1) % poolLimit == 0)
+    //         return await createDownloadTask(i + poolLimit - 1);
+    //       readStream(i + 1);
+    //       return;
+    //     }
+    //     await writable.write(value).then(() => readStream(i));
+    //   };
+    //   await createDownloadTask(0).then(() => readStream(0));
+    // };
+
     return {
-      name,
       loadFile,
       downloader,
       downloading,
       jsonInfo,
-      poolDownload,
+      Download,
     };
   },
 });
@@ -291,7 +200,6 @@ export default defineComponent({
   gap: 5px;
   justify-items: start;
 }
-
 
 .el-upload {
   margin: 10px 0;

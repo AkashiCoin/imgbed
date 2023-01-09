@@ -36,10 +36,7 @@
           </div>
           <div class="el-upload__tip">若分片上传失败可再次上传</div>
         </el-upload>
-        <el-checkbox>
-          <el-option label="生成分享链接"></el-option>
-        </el-checkbox>
-        <el-input class="el-input" v-model="shareLink" disabled placeholder="分享链接">
+        <el-input class="el-input" v-model="shareLink" placeholder="分享链接">
           <template #suffix>
             <i
               style="cursor: pointer"
@@ -57,10 +54,6 @@
           placeholder="文件分片信息"
         >
         </el-input>
-
-        <!-- <div class="urls" v-for="url in urls">
-          <url-show v-show="url.url !== ''" id="url-show" :url="url.url" :name="url.name"></url-show>
-        </div> -->
       </div>
     </el-main>
     <div class="footer">
@@ -84,6 +77,7 @@ import Backtop from "../components/Backtop.vue";
 import FileInfo from "../file_info";
 import { copyToClip } from "../utils/copy_clip";
 import { uploadFileInfo } from "../utils/api";
+import { storage } from "../store";
 
 interface Option {
   path: string;
@@ -154,12 +148,21 @@ export default defineComponent({
       return result;
     }
 
+    const saveMetadata = (data: any) => {
+      storage.push("FS_Metadata", data);
+    };
+
+    const saveFileData = (data: any) => {
+      storage.push("FS_FileData", data);
+    };
+
     const uploadInfo = async (info: any) => {
       await uploadFileInfo(info)
         .then((json) => {
           if (json.code == 0) {
             ElMessage.success("文件分享成功...");
             shareLink.value = json.data.share_url;
+            saveMetadata(json.data)
             copyToClip(shareLink.value);
           } else {
             ElMessage.error(
@@ -234,6 +237,7 @@ export default defineComponent({
             uploading.value = false;
             Promise.all(ret);
             ElMessage.success("文件信息补全完毕...");
+            saveFileData(fileInfo);
             uploadInfo(fileInfo);
             jsonInfo.value = JSON.stringify(fileInfo, null, 4);
             return;
@@ -282,6 +286,7 @@ export default defineComponent({
               uploading.value = false;
               jsonInfo.value = JSON.stringify(fileInfo, null, 4);
               // createAndDownloadFile(fileInfo.name + ".json", jsonInfo.value);
+              saveFileData(fileInfo);
               uploadInfo(fileInfo);
             });
           }

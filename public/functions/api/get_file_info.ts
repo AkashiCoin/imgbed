@@ -19,6 +19,7 @@ export const onRequestPost: PagesFunctin<Env> = async ({ request, env }) => {
     if (!shareId) {
       responseTemplate.code = 2;
       responseTemplate.message = "分享ID不存在..."
+      responseTemplate.data = {};
       return jsonResponse(responseTemplate);
     }
     let fileInfo = await is_key_exist(shareId, env);
@@ -36,6 +37,7 @@ export const onRequestPost: PagesFunctin<Env> = async ({ request, env }) => {
     else {
       responseTemplate.code = 1;
       responseTemplate.message = "文件不存在...";
+      responseTemplate.data = {};
       return jsonResponse(responseTemplate, {
         headers: {
           ...corsHeaders,
@@ -47,6 +49,7 @@ export const onRequestPost: PagesFunctin<Env> = async ({ request, env }) => {
   catch (e) {
     responseTemplate.code = 3;
     responseTemplate.message = "意料之外的错误... :" + e;
+    responseTemplate.data = {};
     return jsonResponse(responseTemplate, {
       headers: corsHeaders
     })
