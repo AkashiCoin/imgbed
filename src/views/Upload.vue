@@ -36,6 +36,9 @@
           </div>
           <div class="el-upload__tip">若分片上传失败可再次上传</div>
         </el-upload>
+        <el-checkbox>
+          <el-option label="生成分享链接"></el-option>
+        </el-checkbox>
         <el-input class="el-input" v-model="shareLink" disabled placeholder="分享链接">
           <template #suffix>
             <i
@@ -80,6 +83,7 @@ import UrlShow from "../components/UrlShow.vue";
 import Backtop from "../components/Backtop.vue";
 import FileInfo from "../file_info";
 import { copyToClip } from "../utils/copy_clip";
+import { uploadFileInfo } from "../utils/api";
 
 interface Option {
   path: string;
@@ -150,26 +154,12 @@ export default defineComponent({
       return result;
     }
 
-    const uploadFileInfo = async (info: any) => {
-      let formData = new FormData();
-      if (info) {
-        Object.keys(info).forEach((key) => {
-          if (typeof info[key] == "string") {
-            formData.append(key, info[key]);
-          } else {
-            formData.append(key, JSON.stringify(info[key]));
-          }
-        });
-      }
-      fetch(api + "/upload_file_info", {
-        method: "POST",
-        body: formData,
-      })
-        .then((res) => res.json())
+    const uploadInfo = async (info: any) => {
+      await uploadFileInfo(info)
         .then((json) => {
           if (json.code == 0) {
             ElMessage.success("文件分享成功...");
-            shareLink.value = json.data.shareLink;
+            shareLink.value = json.data.share_url;
             copyToClip(shareLink.value);
           } else {
             ElMessage.error(
@@ -214,7 +204,7 @@ export default defineComponent({
       console.log(imgApi);
       fileInfo.params.padding = imgApi.bits.length;
       uploading.value = true;
-      const poolLimit = 8;
+      // const poolLimit = 8;
       let _start = 0;
       const _fileSize = file.size;
       const chunk_size = imgApi.max_size - imgApi.bits.length;
@@ -244,7 +234,7 @@ export default defineComponent({
             uploading.value = false;
             Promise.all(ret);
             ElMessage.success("文件信息补全完毕...");
-            uploadFileInfo(fileInfo);
+            uploadInfo(fileInfo);
             jsonInfo.value = JSON.stringify(fileInfo, null, 4);
             return;
           }
@@ -292,12 +282,12 @@ export default defineComponent({
               uploading.value = false;
               jsonInfo.value = JSON.stringify(fileInfo, null, 4);
               // createAndDownloadFile(fileInfo.name + ".json", jsonInfo.value);
-              uploadFileInfo(fileInfo);
+              uploadInfo(fileInfo);
             });
           }
         };
       };
-      // ElMessage.info("开始上传文件...");
+      ElMessage.info("开始上传文件...");
       uploadFile(0);
     };
 

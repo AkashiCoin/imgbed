@@ -11,7 +11,9 @@ export const onRequestPost: PagesFunctin<Env> = async ({ request, env }) => {
     code: 0,
     message: "",
     data: {
-      shareLink: "",
+      share_url: "",
+      timestamp: 0,
+      delete_url: "",
     },
   }
   try {

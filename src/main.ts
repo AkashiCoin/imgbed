@@ -56,6 +56,9 @@ const components = [
 
 NProgress.configure({ trickle: false });
 
+app.config.globalProperties.$NProgress = NProgress;
+app.config.globalProperties.$api = "https://img.smoe.top/api";
+
 components.forEach((component) => {
   app.component(component.name, component);
 });

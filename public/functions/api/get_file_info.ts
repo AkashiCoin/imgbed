@@ -9,7 +9,7 @@ export const onRequestPost: PagesFunctin<Env> = async ({ request, env }) => {
     code: 0,
     message: "",
     data: {
-      fileInfo: {} as FileInfo
+      file_info: {} as FileInfo
     },
   }
   try {
@@ -25,7 +25,7 @@ export const onRequestPost: PagesFunctin<Env> = async ({ request, env }) => {
     if (fileInfo) {
       responseTemplate.code = 0;
       responseTemplate.message = "Success";
-      responseTemplate.data.fileInfo = fileInfo;
+      responseTemplate.data.file_info = fileInfo;
       return jsonResponse(responseTemplate, {
         headers: {
           ...corsHeaders,

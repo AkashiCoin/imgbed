@@ -45,6 +45,8 @@ import UrlShow from "../components/UrlShow.vue";
 import FileInfo from "../file_info";
 import NProgress from "nprogress";
 import { isArray } from "@vue/shared";
+import { getFileInfo } from "../utils/api";
+
 export default defineComponent({
   name: "Share",
   components: {
@@ -66,9 +68,7 @@ export default defineComponent({
     let { signal } = controller;
     let shareId;
     const route = useRoute();
-    const api = "https://img.smoe.top/api";
 
-    let formData = new FormData();
     console.log(route.params.shareid);
     if (isArray(route.params.shareid)) {
       shareId = route.params.shareid[0];
@@ -76,16 +76,11 @@ export default defineComponent({
       shareId = route.params.shareid;
     }
 
-    formData.set("shareId", shareId);
-    fetch(api + "/get_file_info", {
-      method: "POST",
-      body: formData,
-    })
-      .then((resp) => resp.json())
+    getFileInfo(shareId)
       .then((json) => {
         if (json.code == 0) {
-          jsonData = json.data.fileInfo;
-          jsonInfo.value = json.data.fileInfo;
+          jsonData = json.data.file_info;
+          jsonInfo.value = json.data.file_info;
           console.log(jsonData);
         } else if (json.code == 1) {
           ElMessage.error(json.message);
@@ -96,6 +91,7 @@ export default defineComponent({
       .catch((err) => {
         ElMessage.error("意料之外的错误... :" + err);
       });
+
     async function download_chunk(
       url: string,
       writable: WritableStreamDefaultWriter<any>
