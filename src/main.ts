@@ -7,7 +7,7 @@ import App from './App.vue'
 import router from './router'
 import 'element-plus/lib/theme-chalk/index.css'
 import './assets/global.css'
-import { ElIcon, ElContainer, ElMain, ElUpload, ElHeader, ElSelect, ElOption, ElRadio, ElTabs, ElTabPane, ElInput, ElTag, ElFooter, ElLink } from 'element-plus'
+import { ElIcon, ElContainer, ElMain, ElUpload, ElHeader, ElSelect, ElOption, ElRadio, ElTabs, ElTabPane, ElInput, ElTag, ElFooter, ElLink, ElButton } from 'element-plus'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
@@ -20,6 +20,7 @@ const components = [
   ElUpload, ElRadio,
   ElTabs, ElTabPane,
   ElInput, ElTag, ElLink,
+  ElButton
 ]
 // const plugins = []
 

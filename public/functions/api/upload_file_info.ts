@@ -11,12 +11,6 @@ interface ResponseTemplate {
   shareLink: string,
 }
 
-const responseTemplate: ResponseTemplate = {
-  code: 0,
-  message: "",
-  shareLink: "",
-}
-
 const config = {
   domain: "https://img.smoe.top/s/",
   no_ref: "off",
@@ -60,6 +54,11 @@ export const onRequestPost: PagesFunctin<{
   FILESLINK: KVNamespace;
 }> = async ({ request, env }) => {
   FILESLINK = env.FILESLINK;
+  const responseTemplate: ResponseTemplate = {
+    code: 0,
+    message: "",
+    shareLink: "",
+  }
   try {
     const fileInfo: FileInfo = { name: "", filesize: 0, urls: [], params: { padding: 0 } }
     const formData = await request.formData();

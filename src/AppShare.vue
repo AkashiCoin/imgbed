@@ -45,7 +45,7 @@ export default defineComponent({
     let { signal } = controller;
     let shareId;
     const route = useRoute()
-    const api = "https://img-test.pages.dev/api"
+    const api = "https://img.smoe.top/api"
 
 
     let formData = new FormData();

@@ -1,4 +1,4 @@
-// ./functions/api/get_file_info.ts
+// ./functions/api/get_all_file.ts
 
 import FileInfo from "./interface";
 
@@ -49,11 +49,6 @@ export const onRequestPost: PagesFunctin<{
   FILESLINK: KVNamespace;
 }> = async ({ request, env }) => {
   FILESLINK = env.FILESLINK;
-  const responseTemplate: ResponseTemplate = {
-    code: 0,
-    message: "",
-    fileInfo: {} as FileInfo,
-  }
   try {
     const formData = await request.formData();
     const shareId = formData.get("shareId")

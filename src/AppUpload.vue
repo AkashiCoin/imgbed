@@ -72,7 +72,7 @@ export default defineComponent({
     const name = ref("");
     const jsonInfo = ref("")
     const uploader = ref<any>(null);
-    const api = "https://img-test.pages.dev/api"
+    const api = "https://img.smoe.top/api"
     for (const path in apis) {
       const api = apis[path].default as ImgApi;
       api_options.value.push({ path: path, api: api });
