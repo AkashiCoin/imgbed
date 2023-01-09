@@ -10,10 +10,10 @@ import Share from '../views/Share.vue'
 
 
 const routes: Array<RouteRecordRaw> = [
-    { path: '/', name:           "首页", component: Home },
-    { path: '/download', name:   "下载", component: Down },
-    { path: '/upload', name:     "上传", component: Up },
-    { path: '/s/:shareid', name: "文件分享", component: Share },
+    { path: '/', name: "首页", component: Home, meta: { transition: 'fade' }, },
+    { path: '/download', name: "下载", component: Down, meta: { transition: 'slide-left' }, },
+    { path: '/upload', name: "上传", component: Up, meta: { transition: 'slide-right' }, },
+    { path: '/s/:shareid', name: "文件分享", component: Share, meta: { transition: 'fade' }, },
 ]
 
 // 3. 创建路由实例并传递 `routes` 配置

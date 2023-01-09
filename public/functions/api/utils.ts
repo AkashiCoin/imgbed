@@ -23,7 +23,7 @@ async function randomString(len: number) {
     }
     return result;
 }
-export const save_info = async (fileinfo: FileInfo, env: Env) => {
+export const save_info = async (fileinfo: FileInfo | any, env: Env) => {
     let random_key = await randomString(12);
     let is_exist = await env.FILESLINK.get(random_key);
     console.log(is_exist);

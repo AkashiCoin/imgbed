@@ -15,9 +15,9 @@ export const onRequestPost: PagesFunctin<Env> = async ({ request, env }) => {
     },
   }
   try {
-    const fileInfo: FileInfo = { name: "", filesize: 0, urls: [], params: {}, timestamp: 0 }
+    const fileInfo = { name: "", filesize: 0, urls: "", params: "", timestamp: 0 }
     const formData = await request.formData();
-    formData.forEach((value, key) => fileInfo[key] = JSON.parse(value));
+    formData.forEach((value, key) => fileInfo[key] = value);
     if (!fileInfo.name ||
       !fileInfo.filesize ||
       !fileInfo.urls ||
@@ -30,6 +30,8 @@ export const onRequestPost: PagesFunctin<Env> = async ({ request, env }) => {
       });
     }
     fileInfo.timestamp = new Date().getTime();
+    fileInfo.params = JSON.parse(fileInfo.params);
+    fileInfo.urls = JSON.parse(fileInfo.urls);
     let stat, random_key = await save_info(fileInfo, env);
     if (typeof stat == "undefined") {
       responseTemplate.code = 0;

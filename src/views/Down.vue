@@ -169,6 +169,7 @@ export default defineComponent({
         } catch {
           NProgress.done();
           downloading.value = false;
+          ElMessage.warning("下载已取消...");
           controller.abort();
         }
       };
@@ -187,6 +188,7 @@ export default defineComponent({
         );
       });
       readStream(0);
+      ElMessage.info("开始下载文件...");
     };
 
     const loadFile = async (param: any) => {
