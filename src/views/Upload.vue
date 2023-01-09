@@ -36,7 +36,7 @@
           </div>
           <div class="el-upload__tip">若分片上传失败可再次上传</div>
         </el-upload>
-        <el-input v-model="shareLink" disabled placeholder="分享链接">
+        <el-input class="el-input" v-model="shareLink" disabled placeholder="分享链接">
           <template #suffix>
             <i
               style="cursor: pointer"
@@ -46,6 +46,7 @@
           </template>
         </el-input>
         <el-input
+          class="el-input"
           v-model="jsonInfo"
           id="jsonInfo"
           type="textarea"
@@ -96,7 +97,7 @@ export default defineComponent({
   },
   setup() {
     const uploading = ref(false);
-    const apis = import.meta.globEager("./apis/*.ts");
+    const apis = import.meta.globEager("../apis/*.ts");
     const api_options = ref<Option[]>([]);
     const choose_api = ref("");
     const url = ref("");
@@ -376,6 +377,10 @@ export default defineComponent({
 
 .el-upload-dragger {
   width: min(80vw, 360px) !important;
+}
+
+.el-input {
+  margin: 3px 0;
 }
 
 .el-tabs {

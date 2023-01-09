@@ -222,6 +222,10 @@ export default defineComponent({
   min-height: calc(95vh - 60px);
 }
 
+.el-input {
+  margin: 3px 0;
+}
+
 .main {
   width: min(844px, 88vw);
   padding: 15px;

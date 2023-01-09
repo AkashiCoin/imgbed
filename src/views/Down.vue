@@ -29,6 +29,7 @@
           >下载<i class="el-icon-download el-icon--right"></i
         ></el-button>
         <el-input
+        class="el-input"
           v-model="jsonInfo"
           id="jsonInfo"
           type="textarea"
@@ -295,6 +296,10 @@ export default defineComponent({
 
 .el-upload-dragger {
   width: min(80vw, 360px) !important;
+}
+
+.el-input {
+  margin: 3px 0;
 }
 
 .el-tabs {
