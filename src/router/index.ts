@@ -1,16 +1,18 @@
 
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 // import App from './AppXHR.vue'
-import Down from '../AppDown.vue'
-import Up from '../AppUpload.vue'
-import Share from '../AppShare.vue'
+import Home from '../views/Home.vue'
+import Down from '../views/Down.vue'
+import Up from '../views/Upload.vue'
+import Share from '../views/Share.vue'
 // import Upload from '../AppFetch.vue'
 
 
 
 const routes: Array<RouteRecordRaw> = [
-    { path: '/download', name: "下载", component: Down },
-    { path: '/upload', name: "上传", component: Up },
+    { path: '/', name:           "首页", component: Home },
+    { path: '/download', name:   "下载", component: Down },
+    { path: '/upload', name:     "上传", component: Up },
     { path: '/s/:shareid', name: "文件分享", component: Share },
 ]
 
@@ -21,6 +23,7 @@ const router = createRouter({
     // 4. 内部提供了 history 模式的实现。为了简单起见，我们在这里使用 hash 模式。
     history: createWebHistory(),
     routes, // `routes: routes` 的缩写
+    linkActiveClass: 'linkActiveClass'
 })
 
 export default router

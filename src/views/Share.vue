@@ -6,29 +6,44 @@
     <el-main>
       <div class="main">
         <el-form-item prop="attachmentUrl" label="附件">
-          <el-input v-model="jsonInfo.name" disabled placeholder="文件名称"></el-input>
-          <el-input v-model="jsonInfo.filesize" disabled placeholder="文件大小"></el-input>
-          <el-button class="el-button" size="mini" type="primary" @click="poolDownload()">下载
+          <el-input
+            v-model="jsonInfo.name"
+            disabled
+            placeholder="文件名称"
+          ></el-input>
+          <el-input
+            v-model="jsonInfo.filesize"
+            disabled
+            placeholder="文件大小"
+          ></el-input>
+          <el-button
+            class="el-button"
+            size="mini"
+            type="primary"
+            @click="poolDownload()"
+            >下载
             <i class="el-icon-download el-icon--right"></i>
           </el-button>
         </el-form-item>
       </div>
     </el-main>
     <div class="footer">
-      <el-link href="/upload" type="success" target="_blank">免费文件上传</el-link>
+      <el-link href="/upload" type="success" target="_blank"
+        >免费文件上传</el-link
+      >
     </div>
   </el-container>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "@vue/runtime-core";
-import { createDownloadStream } from "./utils/common";
-import { useRouter, useRoute } from 'vue-router'
+import { createDownloadStream } from "../utils/common";
+import { useRouter, useRoute } from "vue-router";
 
 import { ElMessage } from "element-plus";
-import UrlShow from "./components/UrlShow.vue";
-import FileInfo from "./file_info";
-import NProgress from 'nprogress'
+import UrlShow from "../components/UrlShow.vue";
+import FileInfo from "../file_info";
+import NProgress from "nprogress";
 import { isArray } from "@vue/shared";
 export default defineComponent({
   name: "Share",
@@ -36,78 +51,86 @@ export default defineComponent({
     UrlShow,
   },
   setup() {
-    const attachmentUrl = ref("")
-    const downloading = ref(false)
-    const jsonInfo = ref<FileInfo>({ name: "", filesize: 0, urls: [], params: { padding: 0 }, timestamp: 0 } as FileInfo);
+    const attachmentUrl = ref("");
+    const downloading = ref(false);
+    const jsonInfo = ref<FileInfo>({
+      name: "",
+      filesize: 0,
+      urls: [],
+      params: { padding: 0 },
+      timestamp: 0,
+    } as FileInfo);
     let completions = 0;
     let jsonData: FileInfo;
     let controller = new AbortController();
     let { signal } = controller;
     let shareId;
-    const route = useRoute()
-    const api = "https://img.smoe.top/api"
-
+    const route = useRoute();
+    const api = "https://img.smoe.top/api";
 
     let formData = new FormData();
-    console.log(route.params.shareid)
+    console.log(route.params.shareid);
     if (isArray(route.params.shareid)) {
-      shareId = route.params.shareid[0]
-    }
-    else {
-      shareId = route.params.shareid
+      shareId = route.params.shareid[0];
+    } else {
+      shareId = route.params.shareid;
     }
 
-    formData.set("shareId", shareId)
+    formData.set("shareId", shareId);
     fetch(api + "/get_file_info", {
       method: "POST",
-      body: formData
+      body: formData,
     })
-    .then((resp) => resp.json())
-    .then((json) => {
-      if (json.code == 0) {
-        jsonData = json.data.fileInfo;
-        jsonInfo.value = json.data.fileInfo;
-        console.log(jsonData)
-      }
-      else if (json.code == 1) {
-        ElMessage.error(json.message)
-      }
-      else {
-        ElMessage.error(json.code + ": "+ json.message);
-      }
-    })
-    .catch((err) => {
-      ElMessage.error("意料之外的错误... :" + err);
-    })
-    async function download_chunk(url: string, writable: WritableStreamDefaultWriter<any>) {
+      .then((resp) => resp.json())
+      .then((json) => {
+        if (json.code == 0) {
+          jsonData = json.data.fileInfo;
+          jsonInfo.value = json.data.fileInfo;
+          console.log(jsonData);
+        } else if (json.code == 1) {
+          ElMessage.error(json.message);
+        } else {
+          ElMessage.error(json.code + ": " + json.message);
+        }
+      })
+      .catch((err) => {
+        ElMessage.error("意料之外的错误... :" + err);
+      });
+    async function download_chunk(
+      url: string,
+      writable: WritableStreamDefaultWriter<any>
+    ) {
       return fetch(url, {
         headers: {
-          "range": `bytes=${jsonData.params.padding}-`,
+          range: `bytes=${jsonData.params.padding}-`,
         },
-        signal: signal
+        signal: signal,
       }).then(async (res) => {
         const reader = res.body!.getReader();
         let ret: any[] = [];
         const pump = async () => {
-          if (!downloading.value) { return writable.close() };
+          if (!downloading.value) {
+            return writable.close();
+          }
           const { done, value } = await reader.read();
           if (done) {
-            Promise.all(ret)
+            Promise.all(ret);
             completions = completions + 1;
             NProgress.set(completions / jsonData.urls.length);
             // ElMessage.success("[" + completions + "/" + jsonData.urls.length + "] 分片下载成功...")
-            return writable.close()
+            return writable.close();
           }
-          let p = await writable.write(value)
-          ret.push(p)
+          let p = await writable.write(value);
+          ret.push(p);
           pump();
         };
         pump();
-      })
+      });
     }
 
     const preCheck = () => {
-      if (!jsonData.name ||
+      if (
+        !jsonData.name ||
         !jsonData.filesize ||
         !jsonData.urls ||
         !jsonData.params
@@ -116,7 +139,7 @@ export default defineComponent({
         return false;
       }
       return true;
-    }
+    };
 
     const poolDownload = async () => {
       if (!preCheck()) return;
@@ -126,7 +149,10 @@ export default defineComponent({
       downloading.value = true;
       NProgress.start();
       // const reader = file.stream().getReader();
-      const writableStream = await createDownloadStream(jsonData.name, jsonData.filesize);
+      const writableStream = await createDownloadStream(
+        jsonData.name,
+        jsonData.filesize
+      );
       const writable = writableStream.getWriter();
       const reads: ReadableStreamDefaultReader<any>[] = [];
       const readStream = async (i: number) => {
@@ -149,28 +175,28 @@ export default defineComponent({
           return;
         }
         try {
-          await writable.write(value).then(() => readStream(i))
-        }
-        catch {
+          await writable.write(value).then(() => readStream(i));
+        } catch {
           NProgress.done();
           downloading.value = false;
           controller.abort();
         }
-      }
+      };
       jsonData.urls.forEach(async (url) => {
         let transfromStream = new TransformStream();
         reads.push(transfromStream.readable.getReader());
-        await download_chunk(url, transfromStream.writable.getWriter())
-          .catch((err) => {
+        await download_chunk(url, transfromStream.writable.getWriter()).catch(
+          (err) => {
             downloading.value = false;
             NProgress.done();
             controller.abort();
             writable.close();
             console.error("发生了一些错误：" + err);
-          });
-      })
+          }
+        );
+      });
       readStream(0);
-    }
+    };
 
     return {
       jsonInfo,

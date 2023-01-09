@@ -51,10 +51,10 @@
 
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, onMounted, ref } from "vue";
-import ImgApi from "./img_api";
+import ImgApi from "../img_api";
 import { ElMessage } from "element-plus";
-import upload from "./utils/upload_fetch";
-import UrlShow from "./components/UrlShow.vue";
+import upload from "../utils/upload_xhr";
+import UrlShow from "../components/UrlShow.vue";
 
 interface Option {
   path: string;
@@ -78,6 +78,7 @@ export default defineComponent({
       const api = apis[path].default as ImgApi;
       api_options.value.push({ path: path, api: api });
     }
+
     const httpRequest = (param: any) => {
       const file = param.file;
       uploading.value = true;

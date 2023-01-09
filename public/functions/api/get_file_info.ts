@@ -5,7 +5,6 @@ import { jsonResponse, corsHeaders, is_key_exist } from "./utils";
 import config from "./config";
 
 export const onRequestPost: PagesFunctin<Env> = async ({ request, env }) => {
-  FILESLINK = env.FILESLINK;
   const responseTemplate: ResponseTemplate = {
     code: 0,
     message: "",
