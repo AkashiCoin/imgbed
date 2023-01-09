@@ -63,7 +63,7 @@ import FileInfo from "../file_info";
 import NProgress from "nprogress";
 
 export default defineComponent({
-  name: "App",
+  name: "Down",
   components: {
     UrlShow,
   },
@@ -170,6 +170,7 @@ export default defineComponent({
           NProgress.done();
           downloading.value = false;
           ElMessage.warning("下载已取消...");
+          cancelReaders(readers);
           controller.abort();
         }
       };

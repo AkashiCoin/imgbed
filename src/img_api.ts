@@ -19,6 +19,7 @@ interface ImgApi {
   file_type: string;
   file_name: string;
   final_handler?: (text: string) => string;
+  pre_handler?: (text: string) => string;
 }
 
 export default ImgApi

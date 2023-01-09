@@ -77,6 +77,7 @@ import ImgApi from "../img_api";
 import { ElMessage } from "element-plus";
 import upload from "../utils/upload_xhr";
 import UrlShow from "../components/UrlShow.vue";
+import Backtop from "../components/Backtop.vue";
 import FileInfo from "../file_info";
 import { copyToClip } from "../utils/copy_clip";
 
@@ -91,9 +92,10 @@ interface Urls {
 }
 
 export default defineComponent({
-  name: "App",
+  name: "Up",
   components: {
     UrlShow,
+    Backtop,
   },
   setup() {
     const uploading = ref(false);
@@ -340,6 +342,7 @@ export default defineComponent({
       jsonInfo,
       shareLink,
       copyToClip,
+      Backtop,
     };
   },
 });
