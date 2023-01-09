@@ -223,9 +223,10 @@ export default defineComponent({
           ...new Array<string>(Math.ceil(_fileSize / chunk_size)),
         ];
       }
-      if (imgApi.max_size / chunk_size > fileInfo.urls.length) {
+      if (_fileSize / chunk_size > fileInfo.urls.length) {
         uploading.value = false;
         ElMessage.error("文件切片过大，无法补全文件，请切换接口...");
+        return;
       }
       console.log(chunk_size);
       const ret: any[] = [];
@@ -296,7 +297,7 @@ export default defineComponent({
           }
         };
       };
-      ElMessage.info("开始上传文件...");
+      // ElMessage.info("开始上传文件...");
       uploadFile(0);
     };
 

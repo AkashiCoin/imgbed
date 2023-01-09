@@ -45,3 +45,13 @@ async function register() {
     });
   }
   
+export const randomString = (len: number) => {
+  len = len || 8;
+  let $chars = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678";
+  let maxPos = $chars.length;
+  let result = "";
+  for (let i = 0; i < len; i++) {
+      result += $chars.charAt(Math.floor(Math.random() * maxPos));
+  }
+  return result;
+}

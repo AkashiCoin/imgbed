@@ -3,6 +3,9 @@ import NProgress from 'nprogress'
 import { transit_api, Resp, handleRes, generateFormData } from './upload_util'
 
 const upload = async (api: ImgApi, file: File | Blob | any): Promise<Resp> => {
+  if (api.pre_handler) {
+    api = await api.pre_handler(api, file)
+  }
   const data = generateFormData(api, file)
   let url = api.url
   if (api.transit) {
@@ -27,7 +30,7 @@ const upload = async (api: ImgApi, file: File | Blob | any): Promise<Resp> => {
       }
     }
     return handleRes(api, res)
-  } catch (e) {
+  } catch (e: any) {
     console.log('err', e)
     return { img_url: "", err_msg: e.message || '上传失败' }
   } finally {
