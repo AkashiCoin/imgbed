@@ -1,8 +1,10 @@
-// ./functions/api/get_file_info.ts
+// ./functions/api/get_all_file.ts
 
-import { FileInfo, Env, ResponseTemplate} from "./interface";
-import { jsonResponse, corsHeaders, is_key_exist } from "./utils";
-import config from "./config";
+import { FileInfo, Env, ResponseTemplate} from "../interface";
+import { jsonResponse, corsHeaders, list_keys, is_key_exist } from "../utils";
+import config from "../config";
+
+let FILESLINK;
 
 export const onRequestPost: PagesFunctin<Env> = async ({ request, env }) => {
   FILESLINK = env.FILESLINK;
@@ -10,23 +12,25 @@ export const onRequestPost: PagesFunctin<Env> = async ({ request, env }) => {
     code: 0,
     message: "",
     data: {
-      fileInfo: {} as FileInfo
+      filesInfo: []
     },
   }
   try {
     const formData = await request.formData();
-    const shareId = formData.get("shareId")
-    console.log(shareId)
-    if (!shareId) {
-      responseTemplate.code = 2;
-      responseTemplate.message = "分享ID不存在..."
-      return jsonResponse(responseTemplate);
-    }
-    let fileInfo = await is_key_exist(shareId, env);
-    if (fileInfo) {
+    let limit = formData.get("limit")
+    let cursor = formData.get("cursor")
+    if (!limit) limit = config.limit;
+    console.log(limit)
+    let filesInfo = await list_keys(limit, cursor, env);
+    if (filesInfo) {
       responseTemplate.code = 0;
       responseTemplate.message = "Success";
-      responseTemplate.data.fileInfo = fileInfo;
+      for (let key of filesInfo.keys){
+        let fileInfo = await is_key_exist(key.name, env);
+        if (fileInfo) {
+          responseTemplate.data.filesInfo.push(fileInfo);
+        }
+      }
       return jsonResponse(responseTemplate, {
         headers: {
           ...corsHeaders,

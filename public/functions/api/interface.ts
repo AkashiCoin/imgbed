@@ -1,9 +1,21 @@
-interface FileInfo {
-  name: string;
-  urls: string[];
-  params: {padding: number},
-  filesize: number
+interface Data {
+  [key: string]: any
 }
 
+export interface FileInfo {
+  name: string;
+  urls: string[];
+  params: Data,
+  filesize: number,
+  timestamp: number,
+}
 
-export default FileInfo
+export interface Env {
+  FILESLINK: KVNamespace;
+}
+
+export interface ResponseTemplate {
+  code: number,
+  message: string,
+  data: Data,
+}

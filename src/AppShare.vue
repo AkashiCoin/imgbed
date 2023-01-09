@@ -38,7 +38,7 @@ export default defineComponent({
   setup() {
     const attachmentUrl = ref("")
     const downloading = ref(false)
-    const jsonInfo = ref<FileInfo>({ name: "", filesize: 0, urls: [], params: { padding: 0 } } as FileInfo);
+    const jsonInfo = ref<FileInfo>({ name: "", filesize: 0, urls: [], params: { padding: 0 }, timestamp: 0 } as FileInfo);
     let completions = 0;
     let jsonData: FileInfo;
     let controller = new AbortController();
@@ -65,8 +65,8 @@ export default defineComponent({
     .then((resp) => resp.json())
     .then((json) => {
       if (json.code == 0) {
-        jsonData = json.fileInfo;
-        jsonInfo.value = json.fileInfo;
+        jsonData = json.data.fileInfo;
+        jsonInfo.value = json.data.fileInfo;
         console.log(jsonData)
       }
       else if (json.code == 1) {

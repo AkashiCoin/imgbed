@@ -130,7 +130,7 @@ export default defineComponent({
         .then((json) => {
           if (json.code == 0) {
             ElMessage.success("文件分享成功...");
-            shareLink.value = json.shareLink;
+            shareLink.value = json.data.shareLink;
           }
           else {
             ElMessage.error("文件分享失败，错误代码:" + json.code + "\n错误信息:" + json.message);
@@ -145,12 +145,12 @@ export default defineComponent({
     const httpRequest = (param: any) => {
       const file = param.file;
       const imgApi = apis[choose_api.value].default as ImgApi
-      let fileInfo = { name: "", filesize: 0, urls: [], params: { padding: 0 } } as FileInfo
+      let fileInfo = { name: "", filesize: 0, urls: [], params: { padding: 0 }, timestamp: 0 } as FileInfo
       if (jsonInfo.value && jsonInfo.value !== '') {
         fileInfo = JSON.parse(jsonInfo.value) as FileInfo
         if (fileInfo.name !== file.name || fileInfo.filesize !== file.size) {
           ElMessage.warning("文件信息不符合！开始重新上传...")
-          fileInfo = { name: "", filesize: 0, urls: [], params: { padding: 0 } } as FileInfo
+          fileInfo = { name: "", filesize: 0, urls: [], params: { padding: 0 }, timestamp: 0 } as FileInfo
         }
       }
       console.log(fileInfo)

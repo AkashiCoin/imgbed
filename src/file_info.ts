@@ -5,8 +5,9 @@ interface Data {
 interface FileInfo {
   name: string;
   urls: string[];
-  params: {padding: number},
-  filesize: number
+  params: Data,
+  filesize: number,
+  timestamp: number
 }
 
 export default FileInfo
