@@ -30,7 +30,9 @@ export const onRequest: PagesFunction<Env> = async ({ request, env }) => {
       responseTemplate.code = 2;
       responseTemplate.message = "分享ID不存在..."
       responseTemplate.data = {};
-      return jsonResponse(responseTemplate);
+      return jsonResponse(responseTemplate, {
+        headers: corsHeaders,
+      });
     }
     let { value, metadata } = await is_metadata_exist(shareId, env);
     if (value) {

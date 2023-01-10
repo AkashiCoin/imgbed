@@ -23,6 +23,9 @@ export const uploadFileInfo = async (params: FileInfo): Promise<Resp> => {
   return await postRequest("/upload_file_info", params);
 }
 
+export const deleteFileInfo =async (params: any) => {
+  return await postRequest("/delete/" + params.token, { share_id: params.share_id} );
+}
 
 export const postRequest = async (path: string, params: any, headers?: any): Promise<Resp> => {
   let formData = new FormData();

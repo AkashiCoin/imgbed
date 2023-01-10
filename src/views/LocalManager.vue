@@ -1,0 +1,231 @@
+<template>
+  <el-container>
+    <el-header>
+      <h2>管理本地的文件</h2>
+    </el-header>
+    <el-main>
+      <div class="main">
+        <el-table :data="jsonInfo">
+          <el-table-column
+            align="center"
+            label="No"
+            type="index"
+            width="60"
+          ></el-table-column>
+          <el-table-column prop="name" label="文件名"></el-table-column>
+          <el-table-column
+            prop="filesize"
+            :formatter="sizeFormat"
+            label="文件大小"
+          ></el-table-column>
+          <el-table-column prop="params" label="参数">
+            <template #default="scope">
+              <el-tag
+                effect="plain"
+                v-for="item in scope.params"
+                :key="item"
+                type="success"
+                >{{ item }}</el-tag
+              >
+            </template></el-table-column
+          >
+          <el-table-column label="操作">
+            <template #default="scope">
+              <el-button
+                class="el-button"
+                size="small"
+                type="primary"
+                @click="Download(scope.row)"
+                >下载
+                <i class="el-icon-download el-icon--right"></i>
+              </el-button>
+              <el-button
+                class="el-button"
+                size="small"
+                type="danger"
+                @click="Delete(scope.row)"
+                >删除
+                <i class="el-icon-delete el-icon--right"></i>
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-main>
+    <div class="footer">
+      <el-link type="success">
+        <RouterLink to="/" style="color: #409eff; text-decoration: none"
+          >首页
+        </RouterLink>
+      </el-link>
+      |
+      <el-link type="success">
+        <RouterLink to="/upload" style="color: #409eff; text-decoration: none"
+          >前往自定义上传
+        </RouterLink>
+      </el-link>
+      |
+      <el-link type="success">
+        <router-link
+          to="/download"
+          style="color: #409eff; text-decoration: none"
+          >前往自定义下载
+        </router-link>
+      </el-link>
+      |
+      <el-link type="success">
+        <router-link
+          to="/manager/share"
+          style="color: #409eff; text-decoration: none"
+          >管理分享
+        </router-link>
+      </el-link>
+      |
+      <el-link type="success">
+        <router-link
+          to="/manager/local"
+          style="color: #409eff; text-decoration: none"
+          >本地管理
+        </router-link>
+      </el-link>
+    </div>
+  </el-container>
+</template>
+
+<script lang="ts">
+import { defineComponent, ref } from "@vue/runtime-core";
+import { useRouter, useRoute } from "vue-router";
+
+import { ElMessage } from "element-plus";
+import UrlShow from "../components/UrlShow.vue";
+import FileInfo from "../file_info";
+import { isArray } from "@vue/shared";
+import { deleteFileInfo, getFileInfo } from "../utils/api";
+import { DateUtil, formatSize } from "../utils/util";
+import poolDownload from "../utils/download";
+import {
+  deleteFileData,
+  deleteMetadata,
+  getFileData,
+  getMetadata,
+  saveFileData,
+} from "../store";
+
+import Footer from "../components/Footer.vue";
+
+export default defineComponent({
+  name: "local_manager",
+  components: {
+    UrlShow,
+    Footer,
+  },
+  setup() {
+    const attachmentUrl = ref("");
+    const downloading = ref(false);
+    const jsonInfo = ref<FileInfo[]>([
+      {
+        name: "",
+        filesize: 0,
+        urls: [],
+        params: { padding: 0 },
+        timestamp: 0,
+      } as FileInfo,
+    ]);
+    const shareInfo = ref<[]>([]);
+    let jsonData: FileInfo;
+    let shareId;
+
+    jsonInfo.value = getFileData();
+    shareInfo.value = getMetadata();
+
+    const Delete = async (info: any) => {
+      info = JSON.parse(JSON.stringify(info));
+      console.log(info);
+      let f = deleteFileData(info);
+      if (f) {
+        ElMessage.success("删除成功");
+      } else {
+        ElMessage.error("删除失败");
+      }
+      jsonInfo.value = getFileData();
+    };
+
+    const dataFormat = (row: any, column: any) => {
+      const date = row[column.property];
+      if (date === undefined) {
+        return "";
+      }
+      // moment(date).format('YYYY-MM-DD HH:mm:ss')
+      return new DateUtil().formatDate(date);
+    };
+
+    const sizeFormat = (row: any, column: any) => {
+      return formatSize(row[column.property]);
+    };
+
+    const Download = async (info: any) => {
+      downloading.value = true;
+      const file_info: FileInfo = JSON.parse(JSON.stringify(info));
+      ElMessage.success("开始下载...");
+      await poolDownload(file_info).then((resp) => {
+        console.log(resp);
+        downloading.value = false;
+        switch (resp.code) {
+          case 0:
+            ElMessage.success(resp.message);
+            break;
+          case 1:
+            ElMessage.info(resp.message);
+            break;
+          case 2:
+            ElMessage.error(resp.message);
+            break;
+          case 3:
+            ElMessage.warning(resp.message);
+            break;
+          default:
+            ElMessage.error("未知错误: " + resp.message);
+        }
+      });
+    };
+
+    return {
+      jsonInfo,
+      shareInfo,
+      attachmentUrl,
+      Download,
+      Delete,
+      dataFormat,
+      sizeFormat,
+    };
+  },
+});
+</script>
+
+<style scoped>
+@media screen and (max-width: 600px) {
+  .el-message {
+    min-width: 80% !important;
+  }
+}
+
+.el-main {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 !important;
+  min-height: calc(95vh - 60px);
+}
+
+.el-input {
+  margin: 3px 0;
+}
+
+.main {
+  width: min(844px, 88vw);
+  padding: 15px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+}
+</style>

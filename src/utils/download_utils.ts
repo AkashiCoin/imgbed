@@ -12,7 +12,6 @@ export const preCheck = (file_info: FileInfo) => {
     !file_info.urls ||
     !file_info.params
   ) {
-    ElMessage.error("文件信息有误...");
     return false;
   }
   return true;

@@ -12,6 +12,12 @@
         <p><router-link class="router-link" to="/download"
           >下载<i class="el-icon-download el-icon--right"></i>
         </router-link></p>
+        <p><router-link class="router-link" to="/manager/share"
+          >管理分享<i class="el-icon-setting el-icon--right"></i>
+        </router-link></p>
+        <p><router-link class="router-link" to="/manager/local"
+          >本地管理<i class="el-icon-setting el-icon--right"></i>
+        </router-link></p>
       </div>
     </el-main>
     <div class="footer">
@@ -20,7 +26,12 @@
         type="success"
         target="_blank"
         >Github</el-link
-      >
+      > | 
+      <el-link type="success">
+        <router-link to="/manager/local" style="color: #409eff; text-decoration: none"
+          >管理
+        </router-link>
+      </el-link>
     </div>
   </el-container>
 </template>

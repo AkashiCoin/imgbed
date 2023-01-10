@@ -5,15 +5,19 @@ import Home from '../views/Home.vue'
 import Down from '../views/Down.vue'
 import Up from '../views/Upload.vue'
 import Share from '../views/Share.vue'
+import ShareManager from '../views/ShareManager.vue'
+import LocalManager from '../views/LocalManager.vue'
 // import Upload from '../AppFetch.vue'
 
 
 
 const routes: Array<RouteRecordRaw> = [
-    { path: '/', name: "首页", component: Home, meta: { transition: 'fade' }, },
-    { path: '/download', name: "下载", component: Down, meta: { transition: 'slide-left' }, },
-    { path: '/upload', name: "上传", component: Up, meta: { transition: 'slide-right' }, },
+    { path: '/', name:           "首页", component: Home, meta: { transition: 'fade' }, },
+    { path: '/download', name:   "下载", component: Down, meta: { transition: 'slide-left' }, },
+    { path: '/upload', name:     "上传", component: Up, meta: { transition: 'slide-right' }, },
     { path: '/s/:shareid', name: "文件分享", component: Share, meta: { transition: 'fade' }, },
+    { path: '/manager/share', name: "分享文件管理", component: ShareManager, meta: { transition: 'fade' }, },
+    { path: '/manager/local', name: "本地文件管理", component: LocalManager, meta: { transition: 'fade' }, },
 ]
 
 // 3. 创建路由实例并传递 `routes` 配置

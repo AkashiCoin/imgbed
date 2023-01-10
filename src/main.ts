@@ -17,6 +17,7 @@ import {
   ElOption,
   ElRadio,
   ElTabs,
+  ElTable,
   ElTabPane,
   ElInput,
   ElTag,
@@ -25,7 +26,8 @@ import {
   ElButton,
   ElMenu,
   ElMenuItem,
-  ElMenuItemGroup
+  ElMenuItemGroup,
+  ElTableColumn
 } from "element-plus";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
@@ -50,7 +52,9 @@ const components = [
   ElMenu,
   ElMenuItem,
   ElMenuItemGroup,
-  ElFooter
+  ElFooter,
+  ElTable,
+  ElTableColumn
 ];
 // const plugins = []
 

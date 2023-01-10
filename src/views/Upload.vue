@@ -58,11 +58,40 @@
     </el-main>
     <div class="footer">
       <el-link type="success">
-          <router-link
-            to="/download"
-            style="color: #409EFF; text-decoration: none"
-            >前往自定义下载</router-link
-          ></el-link>
+        <RouterLink to="/" style="color: #409eff; text-decoration: none"
+          >首页
+        </RouterLink>
+      </el-link>
+      |
+      <el-link type="success">
+        <RouterLink to="/upload" style="color: #409eff; text-decoration: none"
+          >前往自定义上传
+        </RouterLink>
+      </el-link>
+      |
+      <el-link type="success">
+        <router-link
+          to="/download"
+          style="color: #409eff; text-decoration: none"
+          >前往自定义下载
+        </router-link>
+      </el-link>
+      |
+      <el-link type="success">
+        <router-link
+          to="/manager/share"
+          style="color: #409eff; text-decoration: none"
+          >管理分享
+        </router-link>
+      </el-link>
+      |
+      <el-link type="success">
+        <router-link
+          to="/manager/local"
+          style="color: #409eff; text-decoration: none"
+          >本地管理
+        </router-link>
+      </el-link>
     </div>
   </el-container>
 </template>
@@ -145,7 +174,7 @@ export default defineComponent({
           if (json.code == 0) {
             ElMessage.success("文件分享成功...");
             shareLink.value = json.data.share_url;
-            saveMetadata(json.data)
+            saveMetadata(json.data);
             // copyToClip(shareLink.value);
           } else {
             ElMessage.error(
