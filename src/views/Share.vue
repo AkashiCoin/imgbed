@@ -8,7 +8,7 @@
         <el-form>
           <el-form-item label="文件名称:">
             <el-input
-              v-model="jsonInfo.name"
+              v-model="jsonInfo.file_info.name"
               disabled
               placeholder="文件名称"
             ></el-input>
@@ -29,7 +29,7 @@
           </el-form-item>
           <el-form-item label="SHA512:">
             <el-input
-              v-model="formatted_time"
+              v-model="jsonInfo.sha512"
               disabled
               placeholder="SHA512"
             ></el-input>
@@ -96,7 +96,7 @@ import { isArray } from "@vue/shared";
 import { getFileInfo } from "../utils/api";
 import poolDownload from "../utils/download";
 import { file_data } from "../store";
-import { formatSize } from "../utils/util";
+import { formatSize, DateUtil } from "../utils/util";
 
 export default defineComponent({
   name: "Share",
@@ -131,7 +131,7 @@ export default defineComponent({
           jsonData = json.data.file_info;
           jsonInfo.value = json.data;
           formatted_size.value = formatSize(jsonData.filesize);
-          formatted_time.value = formatSize(jsonInfo.value.timestamp);
+          formatted_time.value = DateUtil.formatDate(jsonInfo.value.timestamp, "yyyy-MM-dd HH:mm:ss");
           file_data.save(json.data.file_info, { ...json.data });
           console.log(jsonData);
         } else if (json.code == 1) {
@@ -148,7 +148,7 @@ export default defineComponent({
 
     const Download = async () => {
       downloading.value = true;
-      const file_info: FileInfo = jsonInfo.value;
+      const file_info: FileInfo = jsonInfo.value.file_info;
       ElMessage.success("开始下载...");
       await poolDownload(file_info).then((resp) => {
         console.log(resp);
