@@ -59,6 +59,7 @@ import {
 import { ElMessage } from "element-plus";
 import UrlShow from "../components/UrlShow.vue";
 import FileInfo from "../file_info";
+import { saveFileData } from "../store";
 import poolDownload from "../utils/download";
 import { preCheck } from "../utils/download_utils";
 
@@ -79,6 +80,9 @@ export default defineComponent({
       }
       downloading.value = true;
       const file_info: FileInfo = JSON.parse(jsonInfo.value) as FileInfo;
+      if(!preCheck(file_info)) return;
+      saveFileData(file_info);
+      ElMessage.success("开始下载...");
       await poolDownload(file_info).then((resp) => {
         console.log(resp);
         downloading.value = false;

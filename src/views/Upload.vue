@@ -77,7 +77,7 @@ import Backtop from "../components/Backtop.vue";
 import FileInfo from "../file_info";
 import { copyToClip } from "../utils/copy_clip";
 import { uploadFileInfo } from "../utils/api";
-import { storage } from "../store";
+import { saveFileData, saveMetadata, storage } from "../store";
 
 interface Option {
   path: string;
@@ -124,15 +124,6 @@ export default defineComponent({
       }
     };
 
-    const createAndDownloadFile = async (fileName: string, content: any) => {
-      console.log(content);
-      const blob = new Blob([content], { type: "application/json" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = fileName;
-      a.click();
-    };
-
     function concatenate(arrays: any[]) {
       if (!arrays.length) return new Uint8Array(0);
       let totalLength = arrays.reduce(
@@ -148,14 +139,6 @@ export default defineComponent({
       return result;
     }
 
-    const saveMetadata = (data: any) => {
-      storage.push("FS_Metadata", data);
-    };
-
-    const saveFileData = (data: any) => {
-      storage.push("FS_FileData", data);
-    };
-
     const uploadInfo = async (info: any) => {
       await uploadFileInfo(info)
         .then((json) => {
@@ -163,7 +146,7 @@ export default defineComponent({
             ElMessage.success("文件分享成功...");
             shareLink.value = json.data.share_url;
             saveMetadata(json.data)
-            copyToClip(shareLink.value);
+            // copyToClip(shareLink.value);
           } else {
             ElMessage.error(
               "文件分享失败，错误代码:" +
@@ -191,7 +174,7 @@ export default defineComponent({
       if (jsonInfo.value && jsonInfo.value !== "") {
         fileInfo = JSON.parse(jsonInfo.value) as FileInfo;
         if (fileInfo.name !== file.name || fileInfo.filesize !== file.size) {
-          ElMessage.warning("文件信息不符合！开始重新上传...");
+          // ElMessage.warning("文件信息不符合！开始重新上传...");
           fileInfo = {
             name: "",
             filesize: 0,

@@ -4,7 +4,7 @@ import { FileInfo, Env, ResponseTemplate } from "../interface";
 import { jsonResponse, corsHeaders, is_key_exist, is_metadata_exist, shareUrl, delete_key } from "../utils";
 import config from "../config";
 
-export const onRequest: PagesFunctin<Env> = async ({ request, env }) => {
+export const onRequest: PagesFunction<Env> = async ({ request, env }) => {
   const responseTemplate: ResponseTemplate = {
     code: 0,
     message: "",

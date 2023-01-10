@@ -6,7 +6,7 @@ import config from "./config";
 import { save_info, randomString } from "./utils";
 
 
-export const onRequestPost: PagesFunctin<Env> = async ({ request, env }) => {
+export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   const responseTemplate: ResponseTemplate = {
     code: 0,
     message: "",
@@ -21,7 +21,7 @@ export const onRequestPost: PagesFunctin<Env> = async ({ request, env }) => {
     },
   }
   try {
-    const fileInfo = { name: "", filesize: 0, urls: "", params: "" as any, timestamp: 0 }
+    const fileInfo = { name: "", filesize: 0 as any, urls: [] as any, params: "" as any, timestamp: 0 }
     const formData = await request.formData();
     formData.forEach((value, key) => fileInfo[key] = value);
     if (!fileInfo.name ||
@@ -57,7 +57,7 @@ export const onRequestPost: PagesFunctin<Env> = async ({ request, env }) => {
       responseTemplate.data.token = token;
       responseTemplate.data.share_id = random_key;
       responseTemplate.data.filename = fileInfo.name;
-      responseTemplate.data.size = fileInfo.filesize;
+      responseTemplate.data.size = parseInt(fileInfo.filesize);
       return jsonResponse(responseTemplate, {
         headers: {
           ...corsHeaders,

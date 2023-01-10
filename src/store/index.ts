@@ -49,7 +49,7 @@ export const sessionStorage = {
         window.sessionStorage.removeItem(key)
     },
     // 添加数据
-    push(key: string,value: any) {
+    push(key: string, value: any) {
         let arr: any = this.get(key);
         if (!arr) {
             arr = [];
@@ -58,3 +58,11 @@ export const sessionStorage = {
         this.set(key, arr);
     }
 }
+
+export const saveMetadata = (data: any) => {
+    storage.push("FS_Metadata", data);
+};
+
+export const saveFileData = (data: any) => {
+    storage.push("FS_FileData", data);
+};

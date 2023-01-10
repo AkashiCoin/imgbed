@@ -6,6 +6,7 @@ import { cancelReaders, preCheck } from './download_utils';
 
 let completions = 0;
 let jsonData: FileInfo;
+let controller: AbortController;
 
 export interface Resp {
   code: number,
@@ -47,12 +48,12 @@ export const download_chunk = async (
   });
 };
 
-export const readStream = (readers: ReadableStreamDefaultReader<any>[], writable: WritableStreamDefaultWriter, controller: AbortController) => {
+export const readStream = (readers: ReadableStreamDefaultReader<any>[], writable: WritableStreamDefaultWriter) => {
   return new Promise((resolve, reject) => {
     const readStream = async (i: number) => {
       if (i == jsonData.urls.length) {
         if (controller.signal.aborted) {
-          reject(true);
+          resolve(true);
           return;
         }
         console.log("读取完成");
@@ -75,7 +76,7 @@ export const readStream = (readers: ReadableStreamDefaultReader<any>[], writable
           cancelReaders(readers);
           controller.abort();
         }
-        reject(false);
+        resolve(false);
       }
     };
     readStream(0);
@@ -86,7 +87,7 @@ export const readStream = (readers: ReadableStreamDefaultReader<any>[], writable
 const poolDownload = async (file_info: FileInfo): Promise<Resp> => {
   if (!preCheck(file_info)) return { code: 3, message: "文件信息解析失败...", data: {} } as Resp
   jsonData = file_info;
-  const controller = new AbortController();
+  controller = new AbortController();
   const resp = { code: 0, message: "", data: {} } as Resp;
   completions = 0;
   NProgress.start();
@@ -97,39 +98,35 @@ const poolDownload = async (file_info: FileInfo): Promise<Resp> => {
   const writable = writableStream.getWriter();
   const readers: ReadableStreamDefaultReader<any>[] = [];
   const ret: any[] = [];
-  try {
-    jsonData.urls.forEach(async (url) => {
-      let transfromStream = new TransformStream();
-      readers.push(transfromStream.readable.getReader());
-      let p = await download_chunk(url, transfromStream.writable.getWriter(), controller.signal).catch(
-        (err) => {
-          if (!controller.signal.aborted) {
-            resp.code = 2;
-            resp.message = "下载失败...";
-            console.error("发生了一些错误：" + err);
-            NProgress.done();
-            controller.abort();
-            cancelReaders(readers);
-          }
+  jsonData.urls.forEach(async (url) => {
+    let transfromStream = new TransformStream();
+    readers.push(transfromStream.readable.getReader());
+    let p = await download_chunk(url, transfromStream.writable.getWriter(), controller.signal).catch(
+      (err) => {
+        if (!controller.signal.aborted) {
+          resp.code = 2;
+          resp.message = "下载失败...";
+          console.error("发生了一些错误：" + err);
+          NProgress.done();
+          controller.abort();
+          cancelReaders(readers);
         }
-      );
-      ret.push(p);
-    });
-    return await readStream(readers, writable, controller).then((e) => {
-      console.log(e)
-      if (e && resp.code == 0) {
-        resp.message = "下载成功...";
       }
-      else if (!e) {
-        resp.code = 1;
-        resp.message = "下载已取消...";
-        controller.abort();
-      }
-      return resp;
-    });
-  } catch {
+    );
+    ret.push(p);
+  });
+  return await readStream(readers, writable).then((e) => {
+    console.log(e)
+    if (e && resp.code == 0) {
+      resp.message = "下载成功...";
+    }
+    else if (!e) {
+      resp.code = 1;
+      resp.message = "下载已取消...";
+      controller.abort();
+    }
     return resp;
-  }
+  });
 };
 
 export default poolDownload

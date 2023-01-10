@@ -18,7 +18,7 @@
           ></el-input>
           <el-button
             class="el-button"
-            size="mini"
+            size="small"
             type="primary"
             @click="Download()"
             >下载
@@ -28,9 +28,11 @@
       </div>
     </el-main>
     <div class="footer">
-      <el-link href="/upload" type="success" target="_blank"
-        >免费文件上传</el-link
-      >
+      <el-link type="success">
+        <RouterLink to="/upload" style="color: #409eff; text-decoration: none"
+          >前往自定义上传
+        </RouterLink>
+      </el-link>
     </div>
   </el-container>
 </template>
@@ -45,6 +47,7 @@ import FileInfo from "../file_info";
 import { isArray } from "@vue/shared";
 import { getFileInfo } from "../utils/api";
 import poolDownload from "../utils/download";
+import { saveFileData } from "../store";
 
 export default defineComponent({
   name: "Share",
@@ -81,16 +84,20 @@ export default defineComponent({
         } else if (json.code == 1) {
           ElMessage.error(json.message);
         } else {
-          ElMessage.error("服务器错误, 错误代码: " + json.code + "\n错误信息" + json.message);
+          ElMessage.error(
+            "服务器错误, 错误代码: " + json.code + "\n错误信息" + json.message
+          );
         }
       })
       .catch((err) => {
         ElMessage.error("意料之外的错误... :" + err);
       });
 
-      const Download = async () => {
+    const Download = async () => {
       downloading.value = true;
       const file_info: FileInfo = jsonInfo.value;
+      ElMessage.success("开始下载...");
+      saveFileData(file_info);
       await poolDownload(file_info).then((resp) => {
         console.log(resp);
         downloading.value = false;
