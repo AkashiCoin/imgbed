@@ -106,7 +106,7 @@ import Backtop from "../components/Backtop.vue";
 import FileInfo from "../file_info";
 import { copyToClip } from "../utils/copy_clip";
 import { uploadFileInfo } from "../utils/api";
-import { saveFileData, saveMetadata, storage } from "../store";
+import { file_data, metadata } from "../store";
 
 interface Option {
   path: string;
@@ -174,7 +174,13 @@ export default defineComponent({
           if (json.code == 0) {
             ElMessage.success("文件分享成功...");
             shareLink.value = json.data.share_url;
-            saveMetadata(json.data);
+            metadata.save(json.data);
+            file_data.save(info, { 
+              share_url: json.data.share_url,
+              share_id: json.data.share_id,
+              timestamp: json.data.timestamp,
+              sha512: json.data.sha512,
+             })
             // copyToClip(shareLink.value);
           } else {
             ElMessage.error(
@@ -198,7 +204,6 @@ export default defineComponent({
         filesize: 0,
         urls: [],
         params: { padding: 0 },
-        timestamp: 0,
       } as FileInfo;
       if (jsonInfo.value && jsonInfo.value !== "") {
         fileInfo = JSON.parse(jsonInfo.value) as FileInfo;
@@ -209,7 +214,6 @@ export default defineComponent({
             filesize: 0,
             urls: [],
             params: { padding: 0 },
-            timestamp: 0,
           } as FileInfo;
         }
       }
@@ -249,7 +253,7 @@ export default defineComponent({
             uploading.value = false;
             Promise.all(ret);
             ElMessage.success("文件信息补全完毕...");
-            saveFileData(fileInfo);
+            file_data.save(fileInfo);
             uploadInfo(fileInfo);
             jsonInfo.value = JSON.stringify(fileInfo, null, 4);
             return;
@@ -298,7 +302,7 @@ export default defineComponent({
               uploading.value = false;
               jsonInfo.value = JSON.stringify(fileInfo, null, 4);
               // createAndDownloadFile(fileInfo.name + ".json", jsonInfo.value);
-              saveFileData(fileInfo);
+              file_data.save(fileInfo);
               uploadInfo(fileInfo);
             });
           }

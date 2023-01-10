@@ -81,7 +81,7 @@ import FileInfo from "../file_info";
 import { isArray } from "@vue/shared";
 import { getFileInfo } from "../utils/api";
 import poolDownload from "../utils/download";
-import { saveFileData } from "../store";
+import { file_data } from "../store";
 import { formatSize } from "../utils/util";
 
 export default defineComponent({
@@ -101,7 +101,7 @@ export default defineComponent({
     } as FileInfo);
     const formatted_size = ref("")
     let jsonData: FileInfo;
-    let shareId;
+    let shareId: any;
     const route = useRoute();
 
     console.log(route.params.shareid);
@@ -117,6 +117,7 @@ export default defineComponent({
           jsonData = json.data.file_info;
           jsonInfo.value = json.data.file_info;
           formatted_size.value = formatSize(jsonInfo.value.filesize);
+          file_data.save(json.data.file_info, { ...json.data });
           console.log(jsonData);
         } else if (json.code == 1) {
           ElMessage.error(json.message);
@@ -134,7 +135,6 @@ export default defineComponent({
       downloading.value = true;
       const file_info: FileInfo = jsonInfo.value;
       ElMessage.success("开始下载...");
-      saveFileData(file_info);
       await poolDownload(file_info).then((resp) => {
         console.log(resp);
         downloading.value = false;

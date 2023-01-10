@@ -110,12 +110,7 @@ import { deleteFileInfo, getFileInfo } from "../utils/api";
 import { DateUtil, formatSize } from "../utils/util";
 import poolDownload from "../utils/download";
 import { copyToClip } from "../utils/copy_clip";
-import {
-  deleteMetadata,
-  getFileData,
-  getMetadata,
-  saveFileData,
-} from "../store";
+import { file_data, metadata } from "../store";
 
 export default defineComponent({
   name: "share_manager",
@@ -137,9 +132,8 @@ export default defineComponent({
     const shareInfo = ref<[]>([]);
     let jsonData: FileInfo;
     let shareId;
-
-    jsonInfo.value = getFileData();
-    shareInfo.value = getMetadata();
+    
+    shareInfo.value = metadata.get();
 
     const Delete = async (info: any) => {
       ElMessageBox.confirm(
@@ -158,7 +152,7 @@ export default defineComponent({
             console.log(resp);
             switch (resp.code) {
               case 0: {
-                let v = deleteMetadata(info);
+                let v = metadata.delete(info);
                 console.log(v);
                 ElMessage.success(resp.message);
                 break;
@@ -201,7 +195,7 @@ export default defineComponent({
         .then(async (json) => {
           if (json.code == 0) {
             const file_info: FileInfo = json.data.file_info;
-            saveFileData(file_info);
+            file_data.save(file_info);
             ElMessage.success("开始下载...");
             await poolDownload(file_info).then((resp) => {
               console.log(resp);

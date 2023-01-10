@@ -114,13 +114,7 @@ import { isArray } from "@vue/shared";
 import { deleteFileInfo, getFileInfo } from "../utils/api";
 import { DateUtil, formatSize } from "../utils/util";
 import poolDownload from "../utils/download";
-import {
-  deleteFileData,
-  deleteMetadata,
-  getFileData,
-  getMetadata,
-  saveFileData,
-} from "../store";
+import { file_data, metadata } from "../store";
 
 import Footer from "../components/Footer.vue";
 
@@ -145,8 +139,8 @@ export default defineComponent({
     const shareInfo = ref<[]>([]);
     const visible_flag = ref(false);
 
-    jsonInfo.value = getFileData();
-    shareInfo.value = getMetadata();
+    jsonInfo.value = file_data.get();
+    shareInfo.value = metadata.get();
 
     const Delete = async (info: any) => {
       ElMessageBox.confirm("是否确定删除？", "提示", {
@@ -158,13 +152,13 @@ export default defineComponent({
           // console.log(info)
           info = JSON.parse(JSON.stringify(info));
           console.log(info);
-          let f = deleteFileData(info);
+          let f = file_data.delete(info);
           if (f) {
             ElMessage.success("删除成功");
           } else {
             ElMessage.error("删除失败");
           }
-          jsonInfo.value = getFileData();
+          jsonInfo.value = file_data.get();
         })
         .catch(() => {
           ElMessage.info("已取消删除");
