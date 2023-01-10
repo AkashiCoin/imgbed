@@ -28,6 +28,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       responseTemplate.code = 0;
       responseTemplate.message = "Success";
       responseTemplate.data.file_info = fileInfo;
+      responseTemplate.data["share_id"] = shareId;
       responseTemplate.data.file_info["timestamp"] = metadata.timestamp;
       if(metadata.sha512) responseTemplate.data["sha512"] = metadata.sha512;
       return jsonResponse(responseTemplate, {

@@ -5,26 +5,30 @@
     </el-header>
     <el-main>
       <div class="main">
-        <el-form-item prop="attachmentUrl" label="附件">
-          <el-input
-            v-model="jsonInfo.name"
-            disabled
-            placeholder="文件名称"
-          ></el-input>
-          <el-input
-            v-model="jsonInfo.filesize"
-            disabled
-            placeholder="文件大小"
-          ></el-input>
-          <el-button
-            class="el-button"
-            size="small"
-            type="primary"
-            @click="Download()"
-            >下载
-            <i class="el-icon-download el-icon--right"></i>
-          </el-button>
-        </el-form-item>
+        <el-form>
+          <el-form-item label="文件名称:">
+            <el-input
+              v-model="jsonInfo.name"
+              disabled
+              placeholder="文件名称"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="文件大小:">
+            <el-input
+              v-model="formatted_size"
+              disabled
+              placeholder="文件大小"
+            ></el-input>
+          </el-form-item>
+        </el-form>
+        <el-button
+          class="el-button"
+          size="small"
+          type="primary"
+          @click="Download()"
+          >下载
+          <i class="el-icon-download el-icon--right"></i>
+        </el-button>
       </div>
     </el-main>
     <div class="footer">
@@ -78,6 +82,7 @@ import { isArray } from "@vue/shared";
 import { getFileInfo } from "../utils/api";
 import poolDownload from "../utils/download";
 import { saveFileData } from "../store";
+import { formatSize } from "../utils/util";
 
 export default defineComponent({
   name: "Share",
@@ -94,6 +99,7 @@ export default defineComponent({
       params: { padding: 0 },
       timestamp: 0,
     } as FileInfo);
+    const formatted_size = ref("")
     let jsonData: FileInfo;
     let shareId;
     const route = useRoute();
@@ -110,6 +116,7 @@ export default defineComponent({
         if (json.code == 0) {
           jsonData = json.data.file_info;
           jsonInfo.value = json.data.file_info;
+          formatted_size.value = formatSize(jsonInfo.value.filesize);
           console.log(jsonData);
         } else if (json.code == 1) {
           ElMessage.error(json.message);
@@ -154,6 +161,7 @@ export default defineComponent({
       jsonInfo,
       attachmentUrl,
       Download,
+      formatted_size,
     };
   },
 });
