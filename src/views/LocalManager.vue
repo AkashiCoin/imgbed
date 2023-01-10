@@ -36,7 +36,7 @@
               <el-button
                 class="el-button"
                 size="small"
-                type="primary"
+                type="success"
                 @click="showInfo(scope.row)"
                 >信息
                 <i class="el-icon-info el-icon--right"></i>

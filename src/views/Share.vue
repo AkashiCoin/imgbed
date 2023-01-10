@@ -20,6 +20,20 @@
               placeholder="文件大小"
             ></el-input>
           </el-form-item>
+          <el-form-item label="分享时间:">
+            <el-input
+              v-model="formatted_time"
+              disabled
+              placeholder="文件大小"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="SHA512:">
+            <el-input
+              v-model="formatted_time"
+              disabled
+              placeholder="SHA512"
+            ></el-input>
+          </el-form-item>
         </el-form>
         <el-button
           class="el-button"
@@ -90,16 +104,16 @@ export default defineComponent({
     UrlShow,
   },
   setup() {
-    const attachmentUrl = ref("");
     const downloading = ref(false);
-    const jsonInfo = ref<FileInfo>({
-      name: "",
-      filesize: 0,
-      urls: [],
-      params: { padding: 0 },
+    const jsonInfo = ref<any>({
+      file_info: {},
+      share_id: "",
+      share_url: "",
       timestamp: 0,
-    } as FileInfo);
+    }
+    );
     const formatted_size = ref("")
+    const formatted_time = ref("")
     let jsonData: FileInfo;
     let shareId: any;
     const route = useRoute();
@@ -115,8 +129,9 @@ export default defineComponent({
       .then((json) => {
         if (json.code == 0) {
           jsonData = json.data.file_info;
-          jsonInfo.value = json.data.file_info;
-          formatted_size.value = formatSize(jsonInfo.value.filesize);
+          jsonInfo.value = json.data;
+          formatted_size.value = formatSize(jsonData.filesize);
+          formatted_time.value = formatSize(jsonInfo.value.timestamp);
           file_data.save(json.data.file_info, { ...json.data });
           console.log(jsonData);
         } else if (json.code == 1) {
@@ -159,9 +174,9 @@ export default defineComponent({
 
     return {
       jsonInfo,
-      attachmentUrl,
       Download,
       formatted_size,
+      formatted_time
     };
   },
 });

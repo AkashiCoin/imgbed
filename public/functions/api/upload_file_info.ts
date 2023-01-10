@@ -38,6 +38,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     }
     fileInfo.params = JSON.parse(fileInfo.params);
     fileInfo.urls = JSON.parse(fileInfo.urls);
+    fileInfo.filesize = parseInt(fileInfo.filesize);
     // delete fileInfo.timestamp;
     let token = await randomString(12);
     let random_key: string | undefined;
