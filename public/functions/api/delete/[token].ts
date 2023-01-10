@@ -54,8 +54,9 @@ export const onRequest: PagesFunction<Env> = async ({ request, env }) => {
         })
       }
       await delete_key(shareId, env);
+      if( metadata.sha512 ) await delete_key(metadata.sha512, env);
       responseTemplate.code = 0;
-      responseTemplate.message = "Delete Success";
+      responseTemplate.message = "Delete Successful";
       responseTemplate.data.file_info = value;
       responseTemplate.data.share_url = shareUrl(shareId);
       responseTemplate.data.timestamp = Date.now();

@@ -7,7 +7,7 @@ export interface FileInfo {
   urls: string[];
   params: Data,
   filesize: number,
-  timestamp: number,
+  timestamp?: number,
 }
 
 export interface Env {

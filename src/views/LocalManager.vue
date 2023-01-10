@@ -17,20 +17,30 @@
             prop="filesize"
             :formatter="sizeFormat"
             label="文件大小"
+            width="100px"
           ></el-table-column>
-          <el-table-column prop="params" label="参数">
+          <!-- <el-table-column prop="params" label="参数">
             <template #default="scope">
               <el-tag
                 effect="plain"
                 v-for="item in scope.params"
                 :key="item"
+                :data="item"
                 type="success"
                 >{{ item }}</el-tag
               >
             </template></el-table-column
-          >
+          > -->
           <el-table-column label="操作">
             <template #default="scope">
+              <el-button
+                class="el-button"
+                size="small"
+                type="primary"
+                @click="showInfo(scope.row)"
+                >信息
+                <i class="el-icon-info el-icon--right"></i>
+              </el-button>
               <el-button
                 class="el-button"
                 size="small"
@@ -89,15 +99,16 @@
         </router-link>
       </el-link>
     </div>
+    <file-show v-model:visible="visible_flag" :data="show_info"></file-show>
   </el-container>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "@vue/runtime-core";
+import { defineComponent, ref, watch } from "@vue/runtime-core";
 import { useRouter, useRoute } from "vue-router";
+import FileShow from "../components/FileShow.vue";
 
-import { ElMessage } from "element-plus";
-import UrlShow from "../components/UrlShow.vue";
+import { ElMessage, ElMessageBox } from "element-plus";
 import FileInfo from "../file_info";
 import { isArray } from "@vue/shared";
 import { deleteFileInfo, getFileInfo } from "../utils/api";
@@ -116,12 +127,12 @@ import Footer from "../components/Footer.vue";
 export default defineComponent({
   name: "local_manager",
   components: {
-    UrlShow,
     Footer,
+    FileShow,
   },
   setup() {
-    const attachmentUrl = ref("");
     const downloading = ref(false);
+    const show_info = ref<FileInfo>();
     const jsonInfo = ref<FileInfo[]>([
       {
         name: "",
@@ -132,22 +143,32 @@ export default defineComponent({
       } as FileInfo,
     ]);
     const shareInfo = ref<[]>([]);
-    let jsonData: FileInfo;
-    let shareId;
+    const visible_flag = ref(false);
 
     jsonInfo.value = getFileData();
     shareInfo.value = getMetadata();
 
     const Delete = async (info: any) => {
-      info = JSON.parse(JSON.stringify(info));
-      console.log(info);
-      let f = deleteFileData(info);
-      if (f) {
-        ElMessage.success("删除成功");
-      } else {
-        ElMessage.error("删除失败");
-      }
-      jsonInfo.value = getFileData();
+      ElMessageBox.confirm("是否确定删除？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          // console.log(info)
+          info = JSON.parse(JSON.stringify(info));
+          console.log(info);
+          let f = deleteFileData(info);
+          if (f) {
+            ElMessage.success("删除成功");
+          } else {
+            ElMessage.error("删除失败");
+          }
+          jsonInfo.value = getFileData();
+        })
+        .catch(() => {
+          ElMessage.info("已取消删除");
+        });
     };
 
     const dataFormat = (row: any, column: any) => {
@@ -162,6 +183,19 @@ export default defineComponent({
     const sizeFormat = (row: any, column: any) => {
       return formatSize(row[column.property]);
     };
+
+    const showInfo = (info: any) => {
+      show_info.value = JSON.parse(JSON.stringify(info));
+      console.log(show_info.value)
+      visible_flag.value = true;
+    };
+
+    watch(
+      () => visible_flag.value,
+      (val) => {
+        console.log("监听flag值得变化:", val);
+      }
+    );
 
     const Download = async (info: any) => {
       downloading.value = true;
@@ -192,11 +226,13 @@ export default defineComponent({
     return {
       jsonInfo,
       shareInfo,
-      attachmentUrl,
       Download,
       Delete,
       dataFormat,
       sizeFormat,
+      showInfo,
+      visible_flag,
+      show_info,
     };
   },
 });

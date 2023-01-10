@@ -13,11 +13,20 @@ export const jsonResponse = (value: ResponseTemplate, init: ResponseInit = {}) =
     ...init,
   });
 
-export const shareUrl = (shareId: string | any) => config.domain + '/s/' + shareId;
+export const sha512 = async (info) => {
+  info = new TextEncoder().encode(info);
+  const url_digest = await crypto.subtle.digest(
+    {
+      name: "SHA-512"
+    },
+    info
+  );
+  const hashArray = Array.from(new Uint8Array(url_digest));
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  return hashHex;
+}
 
-export const deleteUrl = (shareId: string | any, token: string) => config.domain + '/api/delete/' + token + "?shareId=" + shareId;
-
-export async function randomString(len: number) {
+export const randomString = async (len: number) => {
   len = len || 8;
   let $chars = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678";
   let maxPos = $chars.length;
@@ -27,6 +36,9 @@ export async function randomString(len: number) {
   }
   return result;
 }
+export const shareUrl = (shareId: string | any) => config.domain + '/s/' + shareId;
+
+export const deleteUrl = (shareId: string | any, token: string) => config.domain + '/api/delete/' + token + "?shareId=" + shareId;
 
 export const save_info = async (fileinfo: FileInfo | any, env: Env, params?: any) => {
   let random_key = await randomString(12);

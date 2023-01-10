@@ -102,7 +102,7 @@
 import { defineComponent, ref } from "@vue/runtime-core";
 import { useRouter, useRoute } from "vue-router";
 
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import UrlShow from "../components/UrlShow.vue";
 import FileInfo from "../file_info";
 import { isArray } from "@vue/shared";
@@ -142,31 +142,44 @@ export default defineComponent({
     shareInfo.value = getMetadata();
 
     const Delete = async (info: any) => {
-      ElMessage.success("开始删除...");
-      info = JSON.parse(JSON.stringify(info));
-      console.log(info);
-      await deleteFileInfo(info).then((resp) => {
-        console.log(resp);
-        switch (resp.code) {
-          case 0: {
-            let v = deleteMetadata(info);
-            console.log(v);
-            ElMessage.success(resp.message);
-            break;
-          }
-          case 1:
-            ElMessage.info(resp.message);
-            break;
-          case 2:
-            ElMessage.error(resp.message);
-            break;
-          case 3:
-            ElMessage.warning(resp.message);
-            break;
-          default:
-            ElMessage.error("未知错误: " + resp.message);
+      ElMessageBox.confirm(
+        "此操作将删除分享链接，但本地信息依旧会存在, 是否继续?",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
         }
-      });
+      )
+        .then(async () => {
+          info = JSON.parse(JSON.stringify(info));
+          console.log(info);
+          await deleteFileInfo(info).then((resp) => {
+            console.log(resp);
+            switch (resp.code) {
+              case 0: {
+                let v = deleteMetadata(info);
+                console.log(v);
+                ElMessage.success(resp.message);
+                break;
+              }
+              case 1:
+                ElMessage.info(resp.message);
+                break;
+              case 2:
+                ElMessage.error(resp.message);
+                break;
+              case 3:
+                ElMessage.warning(resp.message);
+                break;
+              default:
+                ElMessage.error("未知错误: " + resp.message);
+            }
+          });
+        })
+        .catch(() => {
+          ElMessage.info("已取消删除");
+        });
     };
 
     const dataFormat = (row: any, column: any) => {

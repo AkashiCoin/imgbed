@@ -1,7 +1,7 @@
 // ./functions/api/get_file_info.ts
 
 import { FileInfo, Env, ResponseTemplate} from "./interface";
-import { jsonResponse, corsHeaders, is_key_exist } from "./utils";
+import { jsonResponse, corsHeaders, is_key_exist, is_metadata_exist } from "./utils";
 import config from "./config";
 
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
@@ -9,7 +9,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     code: 0,
     message: "",
     data: {
-      file_info: {} as FileInfo
+      file_info: {} as FileInfo,
     },
   }
   try {
@@ -22,11 +22,14 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       responseTemplate.data = {};
       return jsonResponse(responseTemplate);
     }
-    let fileInfo = await is_key_exist(shareId, env);
+    let { value, metadata } = await is_metadata_exist(shareId, env);
+    let fileInfo = value;
     if (fileInfo) {
       responseTemplate.code = 0;
       responseTemplate.message = "Success";
       responseTemplate.data.file_info = fileInfo;
+      responseTemplate.data.file_info["timestamp"] = metadata.timestamp;
+      if(metadata.sha512) responseTemplate.data["sha512"] = metadata.sha512;
       return jsonResponse(responseTemplate, {
         headers: {
           ...corsHeaders,

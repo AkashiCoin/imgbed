@@ -1,7 +1,7 @@
 // ./functions/api/upload_file_info.ts
 
 import { FileInfo, Env, ResponseTemplate } from "./interface";
-import { jsonResponse, corsHeaders, shareUrl, deleteUrl } from "./utils";
+import { jsonResponse, corsHeaders, shareUrl, deleteUrl, sha512, is_info_exist, is_metadata_exist, delete_key } from "./utils";
 import config from "./config";
 import { save_info, randomString } from "./utils";
 
@@ -21,9 +21,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     },
   }
   try {
-    const fileInfo = { name: "", filesize: 0 as any, urls: [] as any, params: "" as any, timestamp: 0 }
+    const fileInfo = { name: "", filesize: 0 as any, urls: [] as any, params: "" as any }
     const formData = await request.formData();
-    formData.forEach((value, key) => fileInfo[key] = value);
+    formData.forEach((value, key) => key === "timestamp" ? null: fileInfo[key] = value);
     if (!fileInfo.name ||
       !fileInfo.filesize ||
       !fileInfo.urls ||
@@ -36,28 +36,63 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
         headers: corsHeaders
       });
     }
-    fileInfo.timestamp = new Date().getTime();
     fileInfo.params = JSON.parse(fileInfo.params);
     fileInfo.urls = JSON.parse(fileInfo.urls);
+    // delete fileInfo.timestamp;
     let token = await randomString(12);
-    let params = { metadata: { token: token } };
+    let random_key: string | undefined;
+    let stat: any; 
+    let info_sha512: any;
+    let timestamp = Date.now();
+    let params = { metadata: { token: token, timestamp: timestamp, sha512: info_sha512} };
     if (fileInfo.params.expiration_ttl) {
       params = fileInfo.params.expiration_ttl;
     }
     else if (fileInfo.params.expiration) {
       params = fileInfo.params.expiration;
     }
-    let stat, random_key = await save_info(fileInfo, env, params);
+    if (config.unique_link) {
+      info_sha512 = await sha512(JSON.stringify(fileInfo));
+      params.metadata.sha512 = info_sha512;
+      let { value, metadata } = await is_metadata_exist(info_sha512, env);
+      if (value) {
+        if ( metadata.token && metadata.timestamp && metadata.sha512 ) {
+          token = metadata.token;
+          timestamp = metadata.timestamp;
+          info_sha512 = metadata.sha512;
+        }
+        else {
+          await delete_key(value.key, env);
+          let _stat, _random_key = await save_info(fileInfo, env, params);
+          stat = _stat;
+          random_key = _random_key;
+        };
+        random_key = value.key;
+      } else {
+        let _stat, _random_key = await save_info(fileInfo, env, params);
+        stat = _stat;
+        random_key = _random_key;
+        if (typeof stat == "undefined") {
+          console.log(await env.FILESLINK.put(info_sha512, JSON.stringify({ key: random_key }), params));
+        }
+      }
+    }
+    else {
+      let _stat, _random_key = await save_info(fileInfo, env, params);
+      stat = _stat;
+      random_key = _random_key;
+    }
     if (typeof stat == "undefined") {
       responseTemplate.code = 0;
       responseTemplate.message = "Success";
       responseTemplate.data.share_url = shareUrl(random_key);
-      responseTemplate.data.timestamp = fileInfo.timestamp;
+      responseTemplate.data.timestamp = timestamp;
       responseTemplate.data.delete_url = deleteUrl(random_key, token);
       responseTemplate.data.token = token;
       responseTemplate.data.share_id = random_key;
       responseTemplate.data.filename = fileInfo.name;
       responseTemplate.data.size = parseInt(fileInfo.filesize);
+      if (config.unique_link) responseTemplate.data["sha512"] = info_sha512;
       return jsonResponse(responseTemplate, {
         headers: {
           ...corsHeaders,
