@@ -18,12 +18,12 @@ export const onRequest: PagesFunction<Env> = async ({ request, env }) => {
   let token = url.pathname.split("/")[3];
   let shareId;
   try {
-    if (url.searchParams.get("shareId")) {
-      shareId = url.searchParams.get("shareId");
+    if (url.searchParams.get("share_id")) {
+      shareId = url.searchParams.get("share_id");
     }
     else {
       const formData = await request.formData();
-      shareId = formData.get("shareId")
+      shareId = formData.get("share_id")
     }
     console.log(shareId)
     if (!shareId) {

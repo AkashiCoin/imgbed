@@ -1,5 +1,5 @@
 import FileInfo from "../file_info";
-import { equals } from "../utils/util";
+import { equals, equalsJSON, equalsObj } from "../utils/util";
 
 export const metadata_key = "FS_Metadata";
 export const file_data_key = "FS_FileData";
@@ -37,7 +37,7 @@ export const storage = {
         if (!arr) {
             arr = [];
         }
-        let v = arr.filter((v: any) => equals(v, value))
+        let v = arr.filter((v: any) => equalsObj(v, value))
         if (v.length > 0) {
             return;
         }
@@ -63,11 +63,24 @@ export const storage = {
         if (!arr) {
             arr = [];
         }
-        let v = arr.filter((v: any) => equals(v, value))
+        let v = arr.filter((v: any) => equalsObj(v, value))
+        console.log(v)
         if (v.length > 0) {
             return arr.indexOf(v[0]);
         }
         return -1;
+    },
+    edit(key: string, i: number, value: any) {
+        console.log(i);
+        if (i < 0) return this.push(key, value);
+        let arr: any = this.get(key);
+        if (!arr) {
+            arr = [];
+        }
+        if ( arr.length > i) arr[i] = value;
+        else return false;
+        this.set(key, arr);
+        return true;
     }
 };
 
@@ -128,19 +141,22 @@ export const file_data = {
             }
         }
         if (params) {
-            params.forEach((v: any) => {
-                if (v.key !== "file_info")
-                    _data[v.key] = v.value;
-            })
+            for (const key in params) {
+                if (key !== "file_info")
+                    _data[key] = params[key];
+            }
         }
-        return storage.push(file_data_key, _data);
+        return storage.edit(file_data_key, this.indexOf(data), _data);
     },
     getAll() {
         return this.migrate() as FileData[];
     },
     get(data?: any) {
         if (data) {
-            return this.migrate().filter((v: FileData) => equals(v.file_info, data));
+            let f = this.migrate().filter((v: FileData) => equalsObj(v.file_info, data))
+            console.log(f);
+            if (f) return f[0];
+            return null;
         }
         let all = this.migrate();
         let arr: FileInfo[] = [];
@@ -153,11 +169,11 @@ export const file_data = {
         return storage.pop(file_data_key, this.get(data));
     },
     indexOf(data: any) {
-        this.get().forEach((v: any, i: number) => {
-            if (equals(v, data)) {
-                return i;
-            }
-        })
+        let arr = this.get();
+        let v = arr.filter((v: any) => equalsObj(v, data));
+        if (v.length > 0) {
+            return arr.indexOf(v[0]);
+        }
         return -1;
     },
     migrate() {
@@ -165,7 +181,7 @@ export const file_data = {
         if (!arr) {
             arr = [];
         }
-        if (!arr[0].file_info) {
+        if (arr.length !==0 && !arr[0].file_info) {
             let arr2: FileData[] = [];
             arr.forEach((v: any) => {
                 arr2.push({

@@ -114,7 +114,7 @@ import { isArray } from "@vue/shared";
 import { deleteFileInfo, getFileInfo } from "../utils/api";
 import { DateUtil, formatSize } from "../utils/util";
 import poolDownload from "../utils/download";
-import { file_data, metadata } from "../store";
+import { FileData, file_data, metadata } from "../store";
 
 import Footer from "../components/Footer.vue";
 
@@ -126,7 +126,7 @@ export default defineComponent({
   },
   setup() {
     const downloading = ref(false);
-    const show_info = ref<FileInfo>();
+    const show_info = ref<FileData>();
     const jsonInfo = ref<FileInfo[]>([
       {
         name: "",
@@ -171,7 +171,7 @@ export default defineComponent({
         return "";
       }
       // moment(date).format('YYYY-MM-DD HH:mm:ss')
-      return new DateUtil().formatDate(date);
+      return DateUtil.formatDate(date);
     };
 
     const sizeFormat = (row: any, column: any) => {
@@ -179,7 +179,8 @@ export default defineComponent({
     };
 
     const showInfo = (info: any) => {
-      show_info.value = JSON.parse(JSON.stringify(info));
+      info = JSON.parse(JSON.stringify(info));
+      show_info.value = file_data.get(info);
       console.log(show_info.value)
       visible_flag.value = true;
     };
@@ -188,6 +189,7 @@ export default defineComponent({
       () => visible_flag.value,
       (val) => {
         console.log("监听flag值得变化:", val);
+        jsonInfo.value = file_data.get();
       }
     );
 

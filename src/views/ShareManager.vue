@@ -17,11 +17,13 @@
             prop="size"
             :formatter="sizeFormat"
             label="文件大小"
+            width="120px"
           ></el-table-column>
           <el-table-column
             prop="timestamp"
             :formatter="dataFormat"
             label="分享时间"
+            width="120px"
           ></el-table-column>
           <el-table-column prop="share_url" label="分享链接">
             <template #default="scope">
@@ -35,7 +37,7 @@
               ></el-label>
             </template>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="100px">
             <template #default="scope">
               <!-- <el-button
                 class="el-button"
@@ -132,7 +134,7 @@ export default defineComponent({
     const shareInfo = ref<[]>([]);
     let jsonData: FileInfo;
     let shareId;
-    
+
     shareInfo.value = metadata.get();
 
     const Delete = async (info: any) => {
@@ -152,8 +154,6 @@ export default defineComponent({
             console.log(resp);
             switch (resp.code) {
               case 0: {
-                let v = metadata.delete(info);
-                console.log(v);
                 ElMessage.success(resp.message);
                 break;
               }
@@ -165,10 +165,14 @@ export default defineComponent({
                 break;
               case 3:
                 ElMessage.warning(resp.message);
-                break;
+                return;
               default:
                 ElMessage.error("未知错误: " + resp.message);
+                return;
             }
+            let v = metadata.delete(info);
+            shareInfo.value = metadata.get();
+            console.log(v);
           });
         })
         .catch(() => {
@@ -182,7 +186,7 @@ export default defineComponent({
         return "";
       }
       // moment(date).format('YYYY-MM-DD HH:mm:ss')
-      return new DateUtil().formatDate(date);
+      return DateUtil.formatDate(date);
     };
 
     const sizeFormat = (row: any, column: any) => {
