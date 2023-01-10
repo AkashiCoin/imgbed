@@ -61,6 +61,17 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
           token = metadata.token;
           timestamp = metadata.timestamp;
           info_sha512 = metadata.sha512;
+          responseTemplate.code = 12;
+          responseTemplate.message = "该文件已被分享，不能重复分享...";
+          responseTemplate.data.share_url = shareUrl(random_key);
+          responseTemplate.data.timestamp = timestamp;
+          responseTemplate.data.share_id = random_key;
+          responseTemplate.data.filename = fileInfo.name;
+          responseTemplate.data.size = parseInt(fileInfo.filesize);
+          if (config.unique_link) responseTemplate.data["sha512"] = info_sha512;
+          return jsonResponse(responseTemplate, {
+            headers: corsHeaders
+          })
         }
         else {
           await delete_key(value.key, env);

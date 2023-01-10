@@ -26,7 +26,7 @@
         <el-form-item label="分享链接:">
           <el-input v-model="data.share_url" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="sha512:">
+        <el-form-item label="SHA512:">
           <el-input
             v-model="data.sha512"
             autocomplete="off"
