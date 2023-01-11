@@ -14,7 +14,7 @@ import Down from './views/Down.vue'
 import Up from './views/Upload.vue'
 import Share from './views/Share.vue'
 import Home from './views/Home.vue'
-import Bg from './components/bgload.vue'
+import Bg from './components/BackgroudLoad.vue'
 
 export default defineComponent({
     naem: "App",
