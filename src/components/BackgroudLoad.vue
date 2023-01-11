@@ -24,7 +24,7 @@
 <script>
     import { gsap } from "gsap";
     export default {
-        name: "bgLoad",
+        name: "BackgroudLoad",
         data() {
             return {};
         },
@@ -75,7 +75,7 @@
     }
     #bg::after {
         content: '';
-        position: absolute;
+        position: fixed;
         top: 0;
         bottom: 0;
         left: 0;
