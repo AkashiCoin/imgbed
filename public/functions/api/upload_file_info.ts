@@ -15,8 +15,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       size: 0,
       share_url: "",
       share_id: "",
-      delete_url: "",
-      token: "",
+      delete_url: undefined,
+      token: undefined,
       timestamp: 0,
     },
   }
@@ -63,9 +63,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
           info_sha512 = metadata.sha512;
           responseTemplate.code = 12;
           responseTemplate.message = "该文件已被分享，不能重复分享...";
-          responseTemplate.data.share_url = shareUrl(random_key);
+          responseTemplate.data.share_url = shareUrl(value.key);
           responseTemplate.data.timestamp = timestamp;
-          responseTemplate.data.share_id = random_key;
+          responseTemplate.data.share_id = value.key;
           responseTemplate.data.filename = fileInfo.name;
           responseTemplate.data.size = parseInt(fileInfo.filesize);
           if (config.unique_link) responseTemplate.data["sha512"] = info_sha512;

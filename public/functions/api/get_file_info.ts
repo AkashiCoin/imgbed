@@ -10,11 +10,15 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     message: "",
     data: {
       file_info: {} as FileInfo,
+      share_id: undefined,
+      share_url: undefined,
+      timestamp: undefined,
+      sha512: undefined,
     },
   }
   try {
     const formData = await request.formData();
-    const shareId = formData.get("shareId")
+    const shareId = formData.get("share_id")
     console.log(shareId)
     if (!shareId) {
       responseTemplate.code = 2;

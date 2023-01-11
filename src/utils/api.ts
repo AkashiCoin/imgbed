@@ -15,8 +15,8 @@ export interface Resp {
   data: Data;
 }
 
-export const getFileInfo = async (shareId: string): Promise<Resp> => {
-  return await postRequest("/get_file_info", { shareId: shareId });
+export const getFileInfo = async (share_id: string): Promise<Resp> => {
+  return await postRequest("/get_file_info", { share_id: share_id });
 };
 
 export const uploadFileInfo = async (params: FileInfo): Promise<Resp> => {
