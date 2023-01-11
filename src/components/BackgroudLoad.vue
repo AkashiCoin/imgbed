@@ -69,7 +69,6 @@
         right: 0;
         height: 100vh;
         /* background: radial-gradient(circle, mediumturquoise, darkslateblue); */
-        overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         z-index: -1;
     }
