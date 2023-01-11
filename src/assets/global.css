@@ -6,15 +6,10 @@ html,body {
   text-decoration: none;
 }
 
-html {
-  height               : 100%;
-  background           : url(https://random-img.smoe.top/);
-  background-size      : cover;
-  background-repeat    : no-repeat;
-  background-position  : center;
-  background-attachment: fixed;
+body {
+  width                : 100vw;
+  height               : 100vh;
 }
-
 #app {
   font-family            : Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing : antialiased;

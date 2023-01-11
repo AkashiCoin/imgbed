@@ -8,6 +8,7 @@
   "dependencies": {
     "element": "^0.1.4",
     "element-plus": "^1.0.2-beta.54",
+    "gsap": "^3.11.4",
     "nprogress": "^0.2.0",
     "vue": "^3.0.5",
     "vue-router": "4"

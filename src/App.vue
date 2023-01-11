@@ -1,5 +1,6 @@
 <template>
-  <div id="app">
+  <div>
+    <Bg></Bg>
     <router-view v-slot="{ Component }">
       <transition name="fade" mode="out-in">
         <component :is="Component" />
@@ -13,6 +14,7 @@ import Down from './views/Down.vue'
 import Up from './views/Upload.vue'
 import Share from './views/Share.vue'
 import Home from './views/Home.vue'
+import Bg from './components/bgload.vue'
 
 export default defineComponent({
     naem: "App",
@@ -20,7 +22,8 @@ export default defineComponent({
         Down,
         Up,
         Share,
-        Home
+        Home,
+        Bg
     },
     setup() {
         return {};
