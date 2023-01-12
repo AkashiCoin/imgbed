@@ -1,73 +1,51 @@
 <template>
-  <el-container>
-    <el-header class="homeHeader">
-      <h2 class="title">免费文件分享</h2>
-    </el-header>
-    <el-main>
-      <div class="main">
-        <p><router-link class="router-link" to="/"> 首页 </router-link></p>
-        <p><router-link class="router-link" to="/upload"
-          >上传<i class="el-icon-upload el-icon--right"></i>
-        </router-link></p>
-        <p><router-link class="router-link" to="/download"
-          >下载<i class="el-icon-download el-icon--right"></i>
-        </router-link></p>
-        <p><router-link class="router-link" to="/manager/share"
-          >管理分享<i class="el-icon-setting el-icon--right"></i>
-        </router-link></p>
-        <p><router-link class="router-link" to="/manager/local"
-          >本地管理<i class="el-icon-setting el-icon--right"></i>
-        </router-link></p>
-      </div>
-    </el-main>
-    <div class="footer">
-      <el-link
-        href="https://github.com/AkashiCoin"
-        type="success"
-        target="_blank"
-        >Github</el-link
-      > | 
-      <el-link type="success">
-        <router-link to="/manager/local" style="color: #409eff; text-decoration: none"
-          >管理
-        </router-link>
-      </el-link>
+  <div>
+    <p>Hi, welcome to use free file sharing</p>
+    <div class="info">
+      <a class="github" target="blank" href="https://github.com/AkashiCoin">
+        <svg width="3em" height="3em" viewBox="0 0 32 32"><path fill="currentColor" fillRule="evenodd" d="M16 2a14 14 0 0 0-4.43 27.28c.7.13 1-.3 1-.67v-2.38c-3.89.84-4.71-1.88-4.71-1.88a3.71 3.71 0 0 0-1.62-2.05c-1.27-.86.1-.85.1-.85a2.94 2.94 0 0 1 2.14 1.45a3 3 0 0 0 4.08 1.16a2.93 2.93 0 0 1 .88-1.87c-3.1-.36-6.37-1.56-6.37-6.92a5.4 5.4 0 0 1 1.44-3.76a5 5 0 0 1 .14-3.7s1.17-.38 3.85 1.43a13.3 13.3 0 0 1 7 0c2.67-1.81 3.84-1.43 3.84-1.43a5 5 0 0 1 .14 3.7a5.4 5.4 0 0 1 1.44 3.76c0 5.38-3.27 6.56-6.39 6.91a3.33 3.33 0 0 1 .95 2.59v3.84c0 .46.25.81 1 .67A14 14 0 0 0 16 2Z"></path></svg>
+      </a>
     </div>
-  </el-container>
+  </div>
 </template>
 
+
+
+<script>
+import {  defineComponent,} from "@vue/runtime-core";
+import toolTip from '../components/ToolTip.vue'
+export default defineComponent({
+    name: "Home",
+    components: {
+        toolTip
+    },
+    setup() {
+    },
+})
+</script>
+
 <style scoped>
-/* .homeHeader {
-    position: relative;
-    background-color: #409eff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0px 15px;
-    box-sizing: border-box;
-} */
-.el-main {
-  display: flex !important;
-  flex-direction: column;
-  align-items: center;
-  padding: 0 !important;
-  min-height: calc(95vh - 60px);
+p{
+  color: white;
+  font-family: 'Ubuntu',sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
 }
-.router-link {
-  width: min(100px, 88vw);
-  display: inline-block;
-  padding: 6px 18px;
-  margin-bottom: 0;
-  border-radius: 5px;
-  color: black;
+.github{
+  margin: auto;
+  display: block;
+  width: 3rem;
+  height: 3rem;
+  color: #329672;
   text-decoration: none;
-  background-color: #409eff;
+  background: #191c29;
+  border-radius: 100%;
+  transition: all .3s ease-in-out 0s;
 }
-.main {
-  width: min(844px, 88vw);
-  padding: 15px;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+.github:hover, .github:visited, .github:link, .github:active {
+  color: #329672;
+}
+.github:hover{
+  box-shadow: 0px 0px 5px rgb(255, 255, 255);
 }
 </style>

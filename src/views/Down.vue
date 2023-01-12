@@ -1,81 +1,37 @@
 <template>
-  <el-container>
-    <el-header>
-      <h2>使用Json文件下载</h2>
-    </el-header>
-    <el-main>
-      <div class="main">
-        <el-upload
-          drag
-          accept=".json"
-          action="#"
-          :show-file-list="false"
-          :http-request="loadFile"
-          ref="downloader"
-          :disabled="downloading"
-          :auto-upload="true"
-        >
-          <i class="el-icon-upload"></i>
-          <div class="el-upload__text">
-            粘贴/将文件拖到此处，或<em>点击上传</em>
-          </div>
-        </el-upload>
-        <el-button
-          id="download"
-          class="el-button"
-          type="primary"
-          size="small"
-          @click="Download"
-          >下载<i class="el-icon-download el-icon--right"></i
-        ></el-button>
-        <el-input
-          class="el-input"
-          v-model="jsonInfo"
-          id="jsonInfo"
-          type="textarea"
-          autosize
-          placeholder="文件分片信息"
-        ></el-input>
+  <div>
+    <el-upload
+      drag
+      accept=".json"
+      action="#"
+      :show-file-list="false"
+      :http-request="loadFile"
+      ref="downloader"
+      :disabled="downloading"
+      :auto-upload="true"
+    >
+      <i class="el-icon-upload"></i>
+      <div class="el-upload__text">
+        粘贴/将文件拖到此处，或<em>点击上传</em>
       </div>
-    </el-main>
-    <div class="footer">
-      <el-link type="success">
-        <RouterLink to="/" style="color: #409eff; text-decoration: none"
-          >首页
-        </RouterLink>
-      </el-link>
-      |
-      <el-link type="success">
-        <RouterLink to="/upload" style="color: #409eff; text-decoration: none"
-          >前往自定义上传
-        </RouterLink>
-      </el-link>
-      |
-      <el-link type="success">
-        <router-link
-          to="/download"
-          style="color: #409eff; text-decoration: none"
-          >前往自定义下载
-        </router-link>
-      </el-link>
-      |
-      <el-link type="success">
-        <router-link
-          to="/manager/share"
-          style="color: #409eff; text-decoration: none"
-          >管理分享
-        </router-link>
-      </el-link>
-      |
-      <el-link type="success">
-        <router-link
-          to="/manager/local"
-          style="color: #409eff; text-decoration: none"
-          >本地管理
-        </router-link>
-      </el-link>
-    </div>
-  </el-container>
+    </el-upload>
+    <el-button
+      id="download"
+      class="el-button"
+      type="primary"
+      size="small"
+      @click="Download"
+      >下载<i class="el-icon-download el-icon--right"></i
+    ></el-button>
+    <el-input
+      class="el-input"
+      v-model="jsonInfo"
+      id="jsonInfo"
+      type="textarea"
+      autosize
+      placeholder="文件分片信息"
+    ></el-input>
+  </div>
 </template>
 
 <script lang="ts">
@@ -210,22 +166,6 @@ export default defineComponent({
   .el-message {
     min-width: 80% !important;
   }
-}
-
-.el-main {
-  display: flex !important;
-  flex-direction: column;
-  align-items: center;
-  padding: 0 !important;
-  min-height: calc(95vh - 60px);
-}
-
-.main {
-  width: min(844px, 88vw);
-  padding: 15px;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
 }
 
 #radios {

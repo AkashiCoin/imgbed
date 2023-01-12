@@ -24,7 +24,7 @@
 <script>
     import { gsap } from "gsap";
     export default {
-        name: "BackgroudLoad",
+        name: "backgroud-load",
         data() {
             return {};
         },
