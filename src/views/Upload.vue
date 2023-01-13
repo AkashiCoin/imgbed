@@ -1,99 +1,55 @@
 <template>
-  <el-container>
-    <el-header>
-      <h2>文件分片上传</h2>
-    </el-header>
-    <el-main>
-      <div class="main">
-        <div id="radios">
-          <div
-            class="radio"
-            v-for="api_option in api_options"
-            :key="api_option.path"
+  <div>
+    <div id="radios">
+      <div
+        class="radio"
+        v-for="api_option in api_options"
+        :key="api_option.path"
+      >
+        <el-radio :label="api_option.path" v-model="choose_api">
+          <el-tag
+            :type="api_option.api.transit ? 'danger' : 'success'"
+            effect="plain"
+            >{{ api_option.api.name }}</el-tag
           >
-            <el-radio :label="api_option.path" v-model="choose_api">
-              <el-tag
-                :type="api_option.api.transit ? 'danger' : 'success'"
-                effect="plain"
-                >{{ api_option.api.name }}</el-tag
-              >
-            </el-radio>
-          </div>
-        </div>
-        <el-upload
-          drag
-          action="#"
-          :show-file-list="false"
-          :http-request="httpRequest"
-          ref="uploader"
-          :auto-upload="true"
-          :disabled="choose_api == '' || uploading"
-          @click="clickUpload"
-        >
-          <i class="el-icon-upload"></i>
-          <div class="el-upload__text">
-            粘贴/将文件拖到此处，或<em>点击上传</em>
-          </div>
-          <div class="el-upload__tip">若分片上传失败可再次上传</div>
-        </el-upload>
-        <el-input class="el-input" v-model="shareLink" placeholder="分享链接">
-          <template #suffix>
-            <i
-              style="cursor: pointer"
-              class="el-input__icon el-icon-copy-document"
-              @click="copyToClip(shareLink)"
-            ></i>
-          </template>
-        </el-input>
-        <el-input
-          class="el-input"
-          v-model="jsonInfo"
-          id="jsonInfo"
-          type="textarea"
-          autosize
-          placeholder="文件分片信息"
-        >
-        </el-input>
+        </el-radio>
       </div>
-    </el-main>
-    <div class="footer">
-      <el-link type="success">
-        <RouterLink to="/" style="color: #409eff; text-decoration: none"
-          >首页
-        </RouterLink>
-      </el-link>
-      |
-      <el-link type="success">
-        <RouterLink to="/upload" style="color: #409eff; text-decoration: none"
-          >前往自定义上传
-        </RouterLink>
-      </el-link>
-      |
-      <el-link type="success">
-        <router-link
-          to="/download"
-          style="color: #409eff; text-decoration: none"
-          >前往自定义下载
-        </router-link>
-      </el-link>
-      |
-      <el-link type="success">
-        <router-link
-          to="/manager/share"
-          style="color: #409eff; text-decoration: none"
-          >管理分享
-        </router-link>
-      </el-link>
-      |
-      <el-link type="success">
-        <router-link
-          to="/manager/local"
-          style="color: #409eff; text-decoration: none"
-          >本地管理
-        </router-link>
-      </el-link>
     </div>
-  </el-container>
+    <el-upload
+      drag
+      action="#"
+      :show-file-list="false"
+      :http-request="httpRequest"
+      ref="uploader"
+      :auto-upload="true"
+      :disabled="choose_api == '' || uploading"
+      @click="clickUpload"
+    >
+      <i class="el-icon-upload"></i>
+      <div class="el-upload__text">
+        粘贴/将文件拖到此处，或<em>点击上传</em>
+      </div>
+      <div class="el-upload__tip">若分片上传失败可再次上传</div>
+    </el-upload>
+    <el-input class="el-input" v-model="shareLink" placeholder="分享链接">
+      <template #suffix>
+        <i
+          style="cursor: pointer"
+          class="el-input__icon el-icon-copy-document"
+          @click="copyToClip(shareLink)"
+        ></i>
+      </template>
+    </el-input>
+    <el-input
+      class="el-input"
+      v-model="jsonInfo"
+      id="jsonInfo"
+      type="textarea"
+      autosize
+      placeholder="文件分片信息"
+    >
+    </el-input>
+  </div>
 </template>
 
 <script lang="ts">
@@ -365,22 +321,6 @@ export default defineComponent({
   .el-message {
     min-width: 80% !important;
   }
-}
-
-.el-main {
-  display: flex !important;
-  flex-direction: column;
-  align-items: center;
-  padding: 0 !important;
-  min-height: calc(95vh - 60px);
-}
-
-.main {
-  width: min(844px, 88vw);
-  padding: 15px;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
 }
 
 #radios {

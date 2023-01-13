@@ -1,103 +1,59 @@
 <template>
-  <el-container>
-    <el-header>
-      <h2>管理已分享的文件</h2>
-    </el-header>
-    <el-main>
-      <div class="main">
-        <el-table :data="shareInfo">
-          <el-table-column
-            align="center"
-            label="No"
-            type="index"
-            width="60"
-          ></el-table-column>
-          <el-table-column prop="filename" label="文件名"></el-table-column>
-          <el-table-column
-            prop="size"
-            :formatter="sizeFormat"
-            label="文件大小"
-            width="120px"
-          ></el-table-column>
-          <el-table-column
-            prop="timestamp"
-            :formatter="dataFormat"
-            label="分享时间"
-            width="120px"
-          ></el-table-column>
-          <el-table-column prop="share_url" label="分享链接">
-            <template #default="scope">
-              <el-label
-                >{{ scope.row.share_url
-                }}<i
-                  style="cursor: pointer"
-                  class="el-input__icon el-icon-copy-document"
-                  @click="copyToClip(scope.row.share_url)"
-                ></i
-              ></el-label>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="100px">
-            <template #default="scope">
-              <!-- <el-button
-                class="el-button"
-                size="small"
-                type="primary"
-                @click="Download(scope.row)"
-                >下载
-                <i class="el-icon-download el-icon--right"></i>
-              </el-button> -->
-              <el-button
-                class="el-button"
-                size="small"
-                type="danger"
-                @click="Delete(scope.row)"
-                >删除
-                <i class="el-icon-delete el-icon--right"></i>
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-    </el-main>
-    <div class="footer">
-      <el-link type="success">
-        <RouterLink to="/" style="color: #409eff; text-decoration: none"
-          >首页
-        </RouterLink>
-      </el-link>
-      |
-      <el-link type="success">
-        <RouterLink to="/upload" style="color: #409eff; text-decoration: none"
-          >前往自定义上传
-        </RouterLink>
-      </el-link>
-      |
-      <el-link type="success">
-        <router-link
-          to="/download"
-          style="color: #409eff; text-decoration: none"
-          >前往自定义下载
-        </router-link>
-      </el-link>
-      |
-      <el-link type="success">
-        <router-link
-          to="/manager/share"
-          style="color: #409eff; text-decoration: none"
-          >管理分享
-        </router-link>
-      </el-link>
-      |
-      <el-link type="success">
-        <router-link
-          to="/manager/local"
-          style="color: #409eff; text-decoration: none"
-          >本地管理
-        </router-link>
-      </el-link>
-    </div>
-  </el-container>
+  <div>
+    <el-table :data="shareInfo">
+      <el-table-column
+        align="center"
+        label="No"
+        type="index"
+        width="60"
+      ></el-table-column>
+      <el-table-column prop="filename" label="文件名"></el-table-column>
+      <el-table-column
+        prop="size"
+        :formatter="sizeFormat"
+        label="文件大小"
+        width="120px"
+      ></el-table-column>
+      <el-table-column
+        prop="timestamp"
+        :formatter="dataFormat"
+        label="分享时间"
+        width="120px"
+      ></el-table-column>
+      <el-table-column prop="share_url" label="分享链接">
+        <template #default="scope">
+          <el-label
+            >{{ scope.row.share_url
+            }}<i
+              style="cursor: pointer"
+              class="el-input__icon el-icon-copy-document"
+              @click="copyToClip(scope.row.share_url)"
+            ></i
+          ></el-label>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="100px">
+        <template #default="scope">
+          <!-- <el-button
+            class="el-button"
+            size="small"
+            type="primary"
+            @click="Download(scope.row)"
+            >下载
+            <i class="el-icon-download el-icon--right"></i>
+          </el-button> -->
+          <el-button
+            class="el-button"
+            size="small"
+            type="danger"
+            @click="Delete(scope.row)"
+            >删除
+            <i class="el-icon-delete el-icon--right"></i>
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script lang="ts">
@@ -255,23 +211,9 @@ export default defineComponent({
   }
 }
 
-.el-main {
-  display: flex !important;
-  flex-direction: column;
-  align-items: center;
-  padding: 0 !important;
-  min-height: calc(95vh - 60px);
-}
-
 .el-input {
   margin: 3px 0;
 }
 
-.main {
-  width: min(844px, 88vw);
-  padding: 15px;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
-}
+
 </style>
