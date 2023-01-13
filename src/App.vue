@@ -2,47 +2,45 @@
   <div>
     <Bg></Bg>
     <el-container>
-    <toolTip></toolTip>
-    <el-main>
-      <div class="main">
-        <router-view v-slot="{ Component }">
-          <transition name="fade" mode="out-in">
-            <component :is="Component" />
-          </transition>
-        </router-view>
-      </div>
-    </el-main>
-  </el-container>
-    
+      <toolTip></toolTip>
+      <el-main>
+        <div class="main">
+          <router-view v-slot="{ Component }">
+            <transition name="fade" mode="out-in">
+              <component :is="Component" />
+            </transition>
+          </router-view>
+        </div>
+      </el-main>
+    </el-container>
   </div>
 </template>
 <script>
-import { defineComponent } from 'vue'
-import Down from './views/Down.vue'
-import Up from './views/Upload.vue'
-import Share from './views/Share.vue'
-import Home from './views/Home.vue'
-import Bg from './components/BackgroudLoad.vue'
-import toolTip from './components/ToolTip.vue'
-
+import { defineComponent } from "vue";
+import Down from "./views/Down.vue";
+import Up from "./views/Upload.vue";
+import Share from "./views/Share.vue";
+import Home from "./views/Home.vue";
+import Bg from "./components/BackgroudLoad.vue";
+import toolTip from "./components/ToolTip.vue";
 
 export default defineComponent({
-    name: "App",
-    components: {
-        Down,
-        Up,
-        Share,
-        Home,
-        Bg,
-        toolTip
-    },
-    setup() {
-        return {};
-    },
-})
+  name: "App",
+  components: {
+    Down,
+    Up,
+    Share,
+    Home,
+    Bg,
+    toolTip,
+  },
+  setup() {
+    return {};
+  },
+});
 </script>
 <style scoped>
-.el-container{
+.el-container {
   box-sizing: border-box;
   padding-top: 15vh;
   flex-direction: column;

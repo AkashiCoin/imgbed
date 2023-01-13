@@ -55,6 +55,7 @@
         </template>
       </el-table-column>
     </el-table>
+    <file-show v-model:visible="visible_flag" :data="show_info"></file-show>
   </div>
 </template>
 
@@ -136,7 +137,7 @@ export default defineComponent({
     const showInfo = (info: any) => {
       info = JSON.parse(JSON.stringify(info));
       show_info.value = file_data.get(info);
-      console.log(show_info.value)
+      console.log(show_info.value);
       visible_flag.value = true;
     };
 
@@ -196,10 +197,7 @@ export default defineComponent({
   }
 }
 
-
-
 .el-input {
   margin: 3px 0;
 }
-
 </style>

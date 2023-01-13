@@ -214,6 +214,4 @@ export default defineComponent({
 .el-input {
   margin: 3px 0;
 }
-
-
 </style>

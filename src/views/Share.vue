@@ -1,88 +1,40 @@
 <template>
-  <el-container>
-    <el-header>
-      <h2>文件下载</h2>
-    </el-header>
-    <el-main>
-      <div class="main">
-        <el-form>
-          <el-form-item label="文件名称:">
-            <el-input
-              v-model="jsonInfo.file_info.name"
-              disabled
-              placeholder="文件名称"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="文件大小:">
-            <el-input
-              v-model="formatted_size"
-              disabled
-              placeholder="文件大小"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="分享时间:">
-            <el-input
-              v-model="formatted_time"
-              disabled
-              placeholder="文件大小"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="SHA512:">
-            <el-input
-              v-model="jsonInfo.sha512"
-              disabled
-              placeholder="SHA512"
-            ></el-input>
-          </el-form-item>
-        </el-form>
-        <el-button
-          class="el-button"
-          size="small"
-          type="primary"
-          @click="Download()"
-          >下载
-          <i class="el-icon-download el-icon--right"></i>
-        </el-button>
-      </div>
-    </el-main>
-    <div class="footer">
-      <el-link type="success">
-        <RouterLink to="/" style="color: #409eff; text-decoration: none"
-          >首页
-        </RouterLink>
-      </el-link>
-      |
-      <el-link type="success">
-        <RouterLink to="/upload" style="color: #409eff; text-decoration: none"
-          >前往自定义上传
-        </RouterLink>
-      </el-link>
-      |
-      <el-link type="success">
-        <router-link
-          to="/download"
-          style="color: #409eff; text-decoration: none"
-          >前往自定义下载
-        </router-link>
-      </el-link>
-      |
-      <el-link type="success">
-        <router-link
-          to="/manager/share"
-          style="color: #409eff; text-decoration: none"
-          >管理分享
-        </router-link>
-      </el-link>
-      |
-      <el-link type="success">
-        <router-link
-          to="/manager/local"
-          style="color: #409eff; text-decoration: none"
-          >本地管理
-        </router-link>
-      </el-link>
-    </div>
-  </el-container>
+  <div>
+    <el-form>
+      <el-form-item label="文件名称:">
+        <el-input
+          v-model="jsonInfo.file_info.name"
+          disabled
+          placeholder="文件名称"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="文件大小:">
+        <el-input
+          v-model="formatted_size"
+          disabled
+          placeholder="文件大小"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="分享时间:">
+        <el-input
+          v-model="formatted_time"
+          disabled
+          placeholder="文件大小"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="SHA512:">
+        <el-input
+          v-model="jsonInfo.sha512"
+          disabled
+          placeholder="SHA512"
+        ></el-input>
+      </el-form-item>
+    </el-form>
+    <el-button class="el-button" size="small" type="primary" @click="Download()"
+      >下载
+      <i class="el-icon-download el-icon--right"></i>
+    </el-button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -110,10 +62,9 @@ export default defineComponent({
       share_id: "",
       share_url: "",
       timestamp: 0,
-    }
-    );
-    const formatted_size = ref("")
-    const formatted_time = ref("")
+    });
+    const formatted_size = ref("");
+    const formatted_time = ref("");
     let jsonData: FileInfo;
     let shareId: any;
     const route = useRoute();
@@ -131,7 +82,10 @@ export default defineComponent({
           jsonData = json.data.file_info;
           jsonInfo.value = json.data;
           formatted_size.value = formatSize(jsonData.filesize);
-          formatted_time.value = DateUtil.formatDate(jsonInfo.value.timestamp, "yyyy-MM-dd HH:mm:ss");
+          formatted_time.value = DateUtil.formatDate(
+            jsonInfo.value.timestamp,
+            "yyyy-MM-dd HH:mm:ss"
+          );
           file_data.save(json.data.file_info, { ...json.data });
           console.log(jsonData);
         } else if (json.code == 1) {
@@ -176,7 +130,7 @@ export default defineComponent({
       jsonInfo,
       Download,
       formatted_size,
-      formatted_time
+      formatted_time,
     };
   },
 });
@@ -197,15 +151,4 @@ export default defineComponent({
   min-height: calc(95vh - 60px);
 }
 
-.el-input {
-  margin: 3px 0;
-}
-
-.main {
-  width: min(844px, 88vw);
-  padding: 15px;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
-}
 </style>

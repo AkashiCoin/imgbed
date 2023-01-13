@@ -3,7 +3,6 @@
     <el-dialog
       title="文件信息"
       v-model="dialogVisble"
-      width="40%"
       :before-close="close"
     >
       <el-form label-width="auto" label-position="right">

@@ -1,9 +1,13 @@
 {
-    "redirects": [
-      {
-        "source": "/github",
-        "destination": "https://github.com/Xhofe"
-      }
-    ]
-  }
-  
+  "git": {
+    "deploymentEnabled": {
+      "web-dist": false
+    }
+  },
+  "redirects": [
+    {
+      "source": "/github",
+      "destination": "https://github.com/AkashiCoin"
+    }
+  ]
+}
