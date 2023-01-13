@@ -38,7 +38,7 @@ export const randomString = async (len: number) => {
 }
 export const shareUrl = (shareId: string | any) => config.domain + '/s/' + shareId;
 
-export const deleteUrl = (shareId: string | any, token: string) => config.domain + '/api/delete/' + token + "?shareId=" + shareId;
+export const deleteUrl = (shareId: string | any, token: string) => config.domain + '/api/delete/' + token + "?share_id=" + shareId;
 
 export const save_info = async (fileinfo: FileInfo | any, env: Env, params?: any) => {
   let random_key = await randomString(12);
