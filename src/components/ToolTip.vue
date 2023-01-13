@@ -42,63 +42,78 @@
     </div>
 </template>
 <script>
-export default {
+import { defineComponent, onMounted, ref, watch, watchEffect} from "vue";
+import { useRouter , useRoute } from 'vue-router'
+export default defineComponent({
     name: "tool-tip",
-    data() {
-        return {
-            showIndex : 0,
-            activeIndex : 0, 
-        };
-    },
-    mounted(){
-        this.refreshActiveIndex();
-    },
-    methods:{
-        refreshActiveIndex(){
-            let rPath  = this.$route.path;
+    setup(){
+        let showIndex = ref(0);
+        let activeIndex = ref(0);
+        const router = useRouter();
+        const route = useRoute();
+
+        function refreshActiveIndex(){
+            let rPath  = route.path;
             if( rPath == "/"){
-                this.activeIndex = 0;
+                activeIndex.value = 0;
             }
             if( rPath == "/upload"){
-                this.activeIndex = 1;
+                activeIndex.value = 1;
             }
             if( rPath == "/download"){
-                this.activeIndex = 2;
+                activeIndex.value = 2;
             }
             if( rPath == "/manager/share"){
-                this.activeIndex = 3;
+                activeIndex.value = 3;
             }
             if( rPath == "/manager/local"){
-                this.activeIndex = 4;
+                activeIndex.value = 4;
             }
-            this.showIndex = this.activeIndex;
-        },
-        changePage(tabindex){
+            
+            showIndex.value = activeIndex.value;
+        };
+
+        function changePage(tabindex){
             if(tabindex == 0){
-                this.$router.push("/");
+                router.push({ name: "首页", replace: true});
             }
             if(tabindex == 1){
-                this.$router.push("/upload");
+                router.push({ name: "上传", replace: true});
             }
             if(tabindex == 2){
-                this.$router.push("/download");
+                router.push({ name: "下载", replace: true});
             }
             if(tabindex == 3){
-                this.$router.push("/manager/share");
+                router.push({ name: "分享文件管理", replace: true});
             }
             if(tabindex == 4){
-                this.$router.push("/manager/local");
+                router.push({ name: "本地文件管理", replace: true});
             }
-            this.refreshActiveIndex();
-        },
-        showText(hoverDom){
-            this.showIndex = hoverDom;
-        },
-        restore(){
-            this.showIndex = this.activeIndex
-        }
+        };
+        function showText(hoverDom){
+            showIndex.value = hoverDom;
+        };
+        function restore(){
+            showIndex.value = activeIndex.value;
+        };
+        onMounted(() => {
+            refreshActiveIndex();
+        });
+
+        watch(route, () => {
+            refreshActiveIndex();
+        });
+
+        return {
+            showIndex,
+            activeIndex, 
+            refreshActiveIndex,
+            changePage,
+            showText,
+            restore
+        };
     },
-};
+});
 </script>
 <style  scoped>
     @property --rotate {
