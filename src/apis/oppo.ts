@@ -15,6 +15,9 @@ const api: ImgApi = {
   bits: new Uint8Array([]),
   file_name: "image.png",
   extensions: [],
+  final_handler: (text: string): string => {
+    return text.replace('store2', 'store')
+  },
 }
 
 export default api
