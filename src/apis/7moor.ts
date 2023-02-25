@@ -37,7 +37,13 @@ const api: ImgApi = {
       })
   },
   final_handler: (text: string): string => {
-    return "https://fs-im-kefu.7moor-fs2.com/" + JSON.parse(text).key;
+    let key = JSON.parse(text).key;
+    if (key) {
+      return "https://fs-im-kefu.7moor-fs2.com/" + key;
+    }
+    else {
+      return '';
+    }
   }
 }
 
